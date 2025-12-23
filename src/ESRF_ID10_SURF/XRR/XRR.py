@@ -879,6 +879,8 @@ class XRR:
         """
         Ensure the saving directory exists, creating it if necessary.
         """
+        if not os.path.abspath(self.saving_dir).startswith(os.getcwd()):
+            raise ValueError("Invalid saving directory specified.")
         try:
             os.makedirs(self.saving_dir, exist_ok=True)
         except OSError as e:

@@ -383,6 +383,24 @@ class GID:
         np.savetxt(filename, out.T)
         print('GID cut saved as: {}'.format(filename))
 
+    def _plot_cut(self, x, y, xlabel, ylabel, label, ax=None, save=False, filename=None, **kwargs):
+        """
+        Generic plotting function for 1D cuts.
+        """
+        if ax is None:
+            fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 6), layout='tight')
+
+        ax.plot(x, y, 'o', markersize=5, label=label, **kwargs)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.legend()
+
+        if save:
+            if filename is None:
+                raise ValueError("Filename must be provided if save is True.")
+            print(f'Saving plot to {filename}')
+            plt.savefig(filename)
+
     def plot_qxy_cut(self, qz_min, qz_max, ax=None, save=False, **kwargs):
         """
         Plot the qxy cut.
@@ -394,21 +412,10 @@ class GID:
             save (bool, optional): Whether to save the figure. Defaults to False.
             **kwargs: Additional arguments.
         """
-        if ax is None:
-            fig, ax0 = plt.subplots(nrows=1, ncols=1, figsize=(6, 6), layout='tight')
-        else:
-            ax0 = ax
-
         qxy, cut_qxy = self.get_qxy_cut(qz_min, qz_max)
-
-        ax0.plot(qxy, cut_qxy, 'o', markersize=5, label='$Cut\\: {:.2f}<q_z<{:.2f}$'.format(qz_min, qz_max))
-        ax0.set_xlabel('$q_{xy}, \\AA^{-1}$')
-        ax0.set_ylabel('Intensity')
-        ax0.legend()
-
-        if save:
-            print('Saving qxy cut plot.')
-            self._save_figure(plt.gcf(), f'qxy_cut_{qz_min}_{qz_max}_A')
+        label = f'$Cut\\: {qz_min:.2f}<q_z<{qz_max:.2f}$'
+        filename = self.saving_dir + f'/qxy_cut_{qz_min}_{qz_max}_A.png' if save else None
+        self._plot_cut(qxy, cut_qxy, '$q_{xy}, \\AA^{-1}$', 'Intensity', label, ax, save, filename, **kwargs)
 
     def get_qz_cut(self, qxy_min, qxy_max):
         """
@@ -460,21 +467,10 @@ class GID:
             save (bool, optional): Whether to save the figure. Defaults to False.
             **kwargs: Additional arguments.
         """
-        if ax is None:
-            fig, ax0 = plt.subplots(nrows=1, ncols=1, figsize=(6, 6), layout='tight')
-        else:
-            ax0 = ax
-
         qz, cut_qz = self.get_qz_cut(qxy_min, qxy_max)
-
-        ax0.plot(qz, cut_qz, '.', label='$Cut\\: {:.1f}<q_{{xy}}<{:.1f}$'.format(qxy_min, qxy_max))
-        ax0.set_xlabel('$q_{z}, \\AA^{-1}$')
-        ax0.set_ylabel('Intensity')
-        ax0.legend()
-
-        if save:
-            print('Saving qz cut plot.')
-            self._save_figure(plt.gcf(), f'qz_cut_{qxy_min}_{qxy_max}_A')
+        label = f'$Cut\\: {qxy_min:.1f}<q_{{xy}}<{qxy_max:.1f}$'
+        filename = self.saving_dir + f'/qz_cut_{qxy_min}_{qxy_max}_A.png' if save else None
+        self._plot_cut(qz, cut_qz, '$q_{z}, \\AA^{-1}$', 'Intensity', label, ax, save, filename, **kwargs)
 
     def plot_quick_analysis(self, save=False):
         """
@@ -518,6 +514,8 @@ class GID:
         """
         Ensure the saving directory exists, creating it if necessary.
         """
+        if not os.path.abspath(self.saving_dir).startswith(os.getcwd()):
+            raise ValueError("Invalid saving directory specified.")
         try:
             os.makedirs(self.saving_dir, exist_ok=True)
         except OSError as e:

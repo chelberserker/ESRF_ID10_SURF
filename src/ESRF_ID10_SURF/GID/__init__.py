@@ -1,1 +1,1 @@
-from GID import *
+from .GID import GID

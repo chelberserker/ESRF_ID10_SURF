@@ -1,1 +1,1 @@
-from GISAXS import GISAXS
+from .GISAXS import GISAXS
