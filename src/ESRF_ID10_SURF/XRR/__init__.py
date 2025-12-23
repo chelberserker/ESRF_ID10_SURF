@@ -1,1 +1,1 @@
-from XRR import XRR, rebin
+from .XRR import XRR, rebin
