@@ -21,7 +21,7 @@ pip install -e .
 ## Usage
 
 ```python
-from esrf_id10_surf.xrr import XRR
+from ESRF_ID10_SURF.XRR import XRR
 
 # Example usage
 xrr_data = XRR(
