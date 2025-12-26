@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "esrf_id10_surf"
 dynamic = ["version"]
 authors = [
-  { name="Jules", email="jules@example.com" },
+  { name="Egor A. Bersenev", email="egor.bersenev@esrf.fr" },
 ]
 description = "A package for analyzing surface X-ray scattering data from the ID10 beamline at the ESRF."
 readme = "README.md"
