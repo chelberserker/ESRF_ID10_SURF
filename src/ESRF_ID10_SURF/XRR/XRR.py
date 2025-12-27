@@ -13,6 +13,8 @@ from math import sin, cos, pi
 from typing import Optional, Tuple, Union, List, Dict, Any
 
 import h5py
+import orsopy.fileio as orso
+from datetime import datetime
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
@@ -207,6 +209,7 @@ class XRR:
         self.corrected_doubles = False
         self.replaced_transmission = False
         self.is_rebinned = False
+        self.zgH_scan = False
 
         self.PX0 = PX0
         self.PY0 = PY0
@@ -284,7 +287,7 @@ class XRR:
                 Defaults to 1.
         """
         t0 = time.time()
-        logger.info("Start loading data.")
+        #logger.info("Start loading data.")
 
         first_scan_n = str(self.scans[0])
         first_scan_data = self.__load_single_scan__(first_scan_n)
@@ -549,7 +552,7 @@ class XRR:
         Rerr_tr = self.reflectivity_error[sort_indices]
         return np.array([qz_tr, R_tr, Rerr_tr])
 
-    def plot_reflectivity(self, save: bool = False, ax: Optional[plt.Axes] = None) -> Tuple[plt.Figure, plt.Axes]:
+    def plot_reflectivity(self, save: bool = False, ax: Optional[plt.Axes] = None, **kwargs) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plot the reflectivity curve.
 
@@ -566,7 +569,7 @@ class XRR:
         else:
             fig = ax.get_figure()
 
-        ax.errorbar(*self.get_reflectivity(), capsize=1)
+        ax.errorbar(*self.get_reflectivity(), **kwargs)
         ax.semilogy()
         ax.set_xlim(left=0)
         ax.set_ylim(top=2)
@@ -581,7 +584,7 @@ class XRR:
 
         return fig, ax
 
-    def plot_reflectivity_qz4(self, save: bool = False, ax: Optional[plt.Axes] = None) -> Tuple[plt.Figure, plt.Axes]:
+    def plot_reflectivity_qz4(self, save: bool = False, ax: Optional[plt.Axes] = None, **kwargs) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plot reflectivity multiplied by qz^4 (Porod plot).
 
@@ -598,9 +601,10 @@ class XRR:
         else:
             fig = ax.get_figure()
 
-        ax.errorbar(self.qz, self.reflectivity * self.qz ** 4, self.reflectivity_error * self.qz ** 4, capsize=1)
+        ax.errorbar(self.qz, self.reflectivity * self.qz ** 4, self.reflectivity_error * self.qz ** 4,  **kwargs)
         ax.semilogy()
         ax.set_xlim(left=0)
+        ax.set_ylim(bottom=1e-11)
         ax.set_xlabel(r'$q_z, \AA^{-1}$')
         ax.set_ylabel(r'$\mathrm{Reflectivity}\cdot q_z^4$')
         if save:
@@ -609,14 +613,24 @@ class XRR:
 
         return fig, ax
 
-    def save_reflectivity(self):
+    def save_reflectivity(self, format: str = 'dat', owner: str = 'ESRF', creator: str = 'opid10', zgh_scans: Optional[List[int]] = None):
         """
         Save the reflectivity data to a text file.
+
+        Args:
+            format (str, optional): Format of the saved file. Options are 'dat' and 'orso'. Defaults to 'dat'.
+            owner (str, optional): Owner of the data. Defaults to 'ESRF'.
+            creator (str, optional): Creator of the reduced file. Defaults to 'opid10'.
+            zgh_scans (Optional[List[int]], optional): List of zgH scan numbers. Defaults to None.
         """
+        self._ensure_sample_dir()
+
+        if format == 'orso':
+            self._save_orso(owner, creator)
+            return
+
         out = self.get_reflectivity().T
 
-
-        self._ensure_sample_dir()
         if self.Pi<80:
             filename = self.saving_dir + '/{}_XRR_scan_{}_Pi_{:.0f}.dat'.format(
                 self.sample_name, self.scans, self.Pi)
@@ -625,6 +639,107 @@ class XRR:
                 self.sample_name, self.scans)
 
         np.savetxt(filename, out)
+        logger.info('Reflectivity saved to: %s', filename)
+
+    def _save_orso(self, owner: str, creator: str):
+        """
+        Save the reflectivity data in ORSO format.
+        """
+        # 1. Define Columns
+        columns = [
+            orso.Column(name='Qz', unit='1/angstrom', physical_quantity='momentum transfer'),
+            orso.Column(name='R', unit=None, physical_quantity='reflectivity'),
+            orso.ErrorColumn(error_of='R', error_type='uncertainty', value_is='sigma'),
+            orso.ErrorColumn(error_of='Qz', error_type='resolution', value_is='sigma')
+        ]
+
+        # 2. DataSource
+        # Try to get date, else default
+        try:
+            # Try to read start_time from the first scan in the file
+            with h5py.File(self.file, "r") as f:
+                # Assuming standard ESRF structure where start_time might be in the scan group
+                # Need to find where it is located. Often in 'scan_number.1/start_time'
+                scan_n = str(self.scans[0])
+                base_path = f"{scan_n}.1"
+                start_time_str = f[base_path].attrs.get('start_time') or f[f"{base_path}/start_time"][()].decode('utf-8')
+                # Parse date string, e.g., '2023-10-27T10:00:00' or similar
+                # ESRF format can vary, often it is isoformat-like
+                try:
+                    start_date = datetime.fromisoformat(str(start_time_str))
+                except ValueError:
+                     # Fallback for other formats if needed, or just use now
+                     start_date = datetime.now()
+        except Exception:
+            start_date = datetime.now()
+
+        owner_person = orso.Person(name=owner, affiliation='ESRF')
+
+        experiment = orso.Experiment(
+            title='XRR',
+            instrument='ID10-SURF',
+            start_date=start_date,
+            probe='x-ray',
+            facility='ESRF',
+        )
+
+        sample = orso.Sample(name=self.sample_name)
+
+        # Measurement
+        data_files = [self.file]
+        comment = f"Scans: {self.scans}, Pi: {self.Pi}"
+        if self.zgH_scan:
+            comment += f", zgH Scans: {self.zgH_scan}"
+
+        measurement = orso.Measurement(
+            instrument_settings=orso.InstrumentSettings(
+                incident_angle=orso.ValueRange(min=np.min(self.alpha_i), max=np.max(self.alpha_i), unit='deg'),
+                wavelength=orso.Value(magnitude=12.398/self.energy, unit='angstrom'),
+            ),
+            data_files=data_files,
+            comment=comment
+        )
+
+        data_source = orso.DataSource(
+            owner=owner_person,
+            experiment=experiment,
+            sample=sample,
+            measurement=measurement
+        )
+
+        # 3. Reduction
+        reduction = orso.Reduction(
+            software=orso.Software(name='ESRF_ID10_SURF', version='0.1'),
+            creator=orso.Person(name=creator, affiliation='ESRF'),
+            timestamp=datetime.now()
+        )
+
+        # 4. Data
+        qz, R, dR = self.get_reflectivity()
+        # Create resolution array
+        dqz = np.full_like(qz, 1e-5)
+
+        data = np.column_stack((qz, R, dR, dqz))
+
+        # 5. Create Dataset and Save
+        orso_info = orso.Orso(
+            data_source=data_source,
+            reduction=reduction,
+            columns=columns,
+            data_set=self.sample_name
+        )
+
+        dataset = orso.OrsoDataset(info=orso_info, data=data)
+
+        # Filename logic
+        if self.Pi < 80:
+            filename = os.path.join(self.saving_dir, '{}_XRR_scan_{}_Pi_{:.0f}.ort'.format(
+                self.sample_name, self.scans, self.Pi))
+        else:
+            filename = os.path.join(self.saving_dir, '{}_XRR_scan_{}.ort'.format(
+                self.sample_name, self.scans))
+
+        orso.save_orso([dataset], filename)
         logger.info('Reflectivity saved to: %s', filename)
 
     def show_detector_image(self, frame_number: int = 50, ax: Optional[plt.Axes] = None, plot_cross: bool = True):
@@ -859,6 +974,7 @@ class XRR:
                         I0 = calc_I0 / current_trans
                         logger.info('Flux set to {:.4e}'.format(I0))
                         self.I0 = I0
+                        self.zgH_scan = zgH_scan.scans
                 logger.info('I0 replaced.')
             else:
                 logger.warning('Attenuator %s not found in the scan of motor %s.\nCheck inputs.',

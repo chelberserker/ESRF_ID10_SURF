@@ -468,7 +468,7 @@ class GID:
             **kwargs: Additional arguments.
         """
         qz, cut_qz = self.get_qz_cut(qxy_min, qxy_max)
-        label = f'$Cut\\: {qxy_min:.1f}<q_{{xy}}<{qxy_max:.1f}$'
+        label = f'$Cut\\: {qxy_min:.2f}<q_{{xy}}<{qxy_max:.2f}$'
         filename = self.saving_dir + f'/qz_cut_{qxy_min}_{qxy_max}_A.png' if save else None
         self._plot_cut(qz, cut_qz, '$q_{z}, \\AA^{-1}$', 'Intensity', label, ax, save, filename, **kwargs)
 
