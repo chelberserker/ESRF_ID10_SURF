@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X-ray reflectivity &mdash; esrf_id10_surf  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="ESRF_ID10_SURF.XRR package" href="ESRF_ID10_SURF.XRR.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            esrf_id10_surf
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">ESRF_ID10_SURF</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">X-ray reflectivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Plot-and-save-reflectivity-curve">Plot and save reflectivity curve</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Remap-scanning-XRR-experiment-into-q-space-to-explore-diffuse-scattering">Remap scanning XRR experiment into q-space to explore diffuse scattering</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Making-q-space-cuts">Making q-space cuts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Plot-only-2D-graph-to-be-able-to-modifiy-image">Plot only 2D graph to be able to modifiy image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#An-example-of-rebinning-data-to-smooth/reduce-number-of-points">An example of rebinning data to smooth/reduce number of points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Example-of-quick-data-fitting">Example of quick data fitting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#It-is-possible-to-modify-peak-shape-and-background">It is possible to modify peak shape and background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Peak-shapes:">Peak shapes:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA">Saving a 2D image to h5 file to be explored with pyMCA</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esrf_id10_surf</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">X-ray reflectivity</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from ESRF_ID10_SURF.GID import GID
+from ESRF_ID10_SURF.XRR import XRR, rebin
+import matplotlib.pyplot as plt
+import numpy as np
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>FileDir = &#39;/mnt/data/ls3582/id10-surf/20251120/RAW_DATA/DPPC_0PS/DPPC_0PS_0002/&#39;
+FileName = &#39;DPPC_0PS_0002.h5&#39;
+
+SavingDir = FileDir.replace(&#39;RAW_DATA&#39;, &#39;PROCESSED_DATA&#39;)  ### optional. If this argument is not given to the class, data will be saved in the folder where the script runs
+
+zgH_ScanN_list = [21]   ### optional z-scan for normalization of intensity
+refl_ScanN_list = [22,23] ### actual XRR scans
+
+
+gid_ScanN_list = [25]
+
+
+file = FileDir+FileName
+</pre></div>
+</div>
+</div>
+<section id="X-ray-reflectivity">
+<h1>X-ray reflectivity<a class="headerlink" href="#X-ray-reflectivity" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>refl = XRR(file, refl_ScanN_list, PX0=401, PY0 = 300, dPX=8, dPY=5, bckg_gap=3, monitor_name=&#39;ionch2&#39;, alpha_i_name=&#39;mu&#39;, saving_dir=SavingDir)
+zgH = XRR(file, zgH_ScanN_list, PX0=401, PY0=300, dPX=8, dPY=5, bckg_gap=3, monitor_name=&#39;ionch2&#39;,alpha_i_name=&#39;zgH&#39;)
+
+
+### Plot one of the detector images for diagnostic, i.e. reflected beam is out of the signal box, parasitic scattering in the background, etc.
+refl.show_detector_image(40)
+
+
+### Apply all necessary correction in automatic way, sample size im cm and beam size in microns are required for the footprint correction
+### z_scan with the same filter as first part of the reflectivity is optional, provides I0 normalization
+refl.apply_auto_corrections(sample_size=17, beam_size=19, z_scan=zgH)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Loaded scan #22
+Loaded scan #23
+Number of points in the scan    124
+Loaded scan #21
+Number of points in the scan     41
+Correcting transmission using double points.
+Flux set to 6.4819e+11
+I0 replaced.
+Loaded scan #22
+Loaded scan #23
+Number of points in the scan    124
+Reloaded and reprocessed data.
+Correcting transmission using double points.
+Footprint correction completed with beam size = 19 microns and sample size = 17 cm
+Reflectivity is fully corrected.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_3_1.png" src="_images/usage_example_3_1.png" />
+</div>
+</div>
+<section id="Plot-and-save-reflectivity-curve">
+<h2>Plot and save reflectivity curve<a class="headerlink" href="#Plot-and-save-reflectivity-curve" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Plot reflectivity on a new Figure
+refl.plot_reflectivity(save=True, fmt=&#39;s&#39;, markersize=6, color=&#39;k&#39;, markerfacecolor=&#39;w&#39;, capsize=3)
+
+# Same, but multiplied by q_z^4
+#refl.plot_reflectivity_qz4()
+
+### Save as 3-column .dat file
+refl.save_reflectivity()
+### Save metadata-rich ORSO-compliant file
+refl.save_reflectivity(format=&#39;orso&#39;, owner=&#39;Harvard&#39;, creator=&#39;John Doe&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Plot saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//DPPC_0PS_XRR_scan_[22 23]_Pi_35_log.png.
+Reflectivity saved to: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//DPPC_0PS_XRR_scan_[22 23]_Pi_35.dat
+Reflectivity saved to: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002/DPPC_0PS_XRR_scan_[22 23]_Pi_35.ort
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_5_1.png" src="_images/usage_example_5_1.png" />
+</div>
+</div>
+<section id="Remap-scanning-XRR-experiment-into-q-space-to-explore-diffuse-scattering">
+<h3>Remap scanning XRR experiment into q-space to explore diffuse scattering<a class="headerlink" href="#Remap-scanning-XRR-experiment-into-q-space-to-explore-diffuse-scattering" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>refl.produce_Qmap(SDD=820)
+refl.plot_Qmap()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Starting q-space mapping.
+2D map calculated. Processing time 1.483 sec
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 600x600 with 1 Axes&gt;,
+ &lt;Axes: xlabel=&#39;$q_x, \\AA^{-1}$&#39;, ylabel=&#39;$q_z, \\AA^{-1}$&#39;&gt;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_7_2.png" src="_images/usage_example_7_2.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="Grazing-Incidence-Diffraction">
+<h1>Grazing Incidence Diffraction<a class="headerlink" href="#Grazing-Incidence-Diffraction" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid = GID(file, gid_ScanN_list, PX0=50, PPD=198.5, mythen_gap=90, alpha_i_name=&#39;mu&#39;, I0=2e12, saving_dir=SavingDir)
+gid.plot_quick_analysis(save=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Start loading data.
+Loading scan #25
+Loaded scan #25
+Loading completed. Reading time 0.005 sec
+Start processing 2D data.
+Processing completed. Processing time 0.002 sec
+
+
+Saving standard GID plot.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_9_1.png" src="_images/usage_example_9_1.png" />
+</div>
+</div>
+<section id="Making-q-space-cuts">
+<h2>Making q-space cuts<a class="headerlink" href="#Making-q-space-cuts" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig, [ax0, ax1] = plt.subplots(1,2, figsize=(8,4), layout=&#39;tight&#39;)
+gid.plot_qxy_cut(0, 0.4, ax=ax0, marker=&#39;s&#39;, alpha=0.8)            ## plot cut
+gid.plot_qxy_cut(0.5, 1, ax=ax0, alpha=0.8)
+ax0.legend(loc = &#39;lower right&#39;)
+gid.save_qxy_cut(0, 0.4)                   ## save the same cut as txt file
+gid.save_qxy_cut(0.5, 1)
+
+gid.plot_qz_cut(1.4, 1.5, ax=ax1, alpha=0.2)
+gid.plot_qz_cut(1.25, 1.4, ax=ax1, alpha=0.2)
+ax1.set_xlim(0, 1.25)
+
+gid.save_qz_cut(1.4, 1.5)
+gid.save_qz_cut(1.25, 1.4)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+GID cut saved as: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_scan_[25]_qxy_cut_0_0.4_A.dat
+GID cut saved as: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_scan_[25]_qxy_cut_0.5_1_A.dat
+GID cut saved as: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_scan_[25]_qz_cut_1.4_1.5_A.dat
+GID cut saved as: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_scan_[25]_qz_cut_1.25_1.4_A.dat
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_11_1.png" src="_images/usage_example_11_1.png" />
+</div>
+</div>
+<section id="Plot-only-2D-graph-to-be-able-to-modifiy-image">
+<h3>Plot only 2D graph to be able to modifiy image<a class="headerlink" href="#Plot-only-2D-graph-to-be-able-to-modifiy-image" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(layout=&#39;tight&#39;)
+gid.plot_2D_image(ax=ax, cmap=&#39;jet&#39;)   ### this function takes kwargs for imshow
+ax.set_xlim((1.12,1.75))
+ax.set_ylim(0, 1.2)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.0, 1.2)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_13_1.png" src="_images/usage_example_13_1.png" />
+</div>
+</div>
+</section>
+<section id="An-example-of-rebinning-data-to-smooth/reduce-number-of-points">
+<h3>An example of rebinning data to smooth/reduce number of points<a class="headerlink" href="#An-example-of-rebinning-data-to-smooth/reduce-number-of-points" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>qz, qz_cut  = gid.get_qz_cut(1.25, 1.4)
+new_qz, new_qz_cut, new_qz_e = rebin(qz[200:1200], qz_cut[200:1200],np.ones(len(qz[200:1200])), number_of_bins=40)
+plt.plot(qz, qz_cut, &#39;o&#39;, alpha=0.5)
+plt.plot(new_qz, new_qz_cut, &#39;o&#39;, alpha=0.8)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x73b1dbed67e0&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_15_1.png" src="_images/usage_example_15_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Example-of-quick-data-fitting">
+<h2>Example of quick data fitting<a class="headerlink" href="#Example-of-quick-data-fitting" title="Link to this heading"></a></h2>
+<section id="It-is-possible-to-modify-peak-shape-and-background">
+<h3>It is possible to modify peak shape and background<a class="headerlink" href="#It-is-possible-to-modify-peak-shape-and-background" title="Link to this heading"></a></h3>
+</section>
+<section id="Peak-shapes:">
+<h3>Peak shapes:<a class="headerlink" href="#Peak-shapes:" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Gaussian</p></li>
+<li><p>Lorentzian</p></li>
+<li><p>Voigt</p></li>
+<li><p>Pseudo-voigt ### Backgrounds:</p></li>
+<li><p>Linear</p></li>
+<li><p>Constant</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.analyze_peak(*gid.get_qz_cut(1.25, 1.4), limits=(0.1, 1.2), model=&#39;gaussian&#39;, background=&#39;constant&#39;, filename_prefix=f&#39;qz_fit_result_pi_{gid.Pi}&#39;, save=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fitting gaussian profile...
+Graph saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//qz_fit_result_pi_35_DPPC_0PS.png
+Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//qz_fit_result_pi_35_DPPC_0PS.txt
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: (Model(gaussian, prefix='peak_') + Model(constant, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>41</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1099</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 7.9789e-18</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.2867e-21</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-50954.6989</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-50934.6903</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99202106</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.6351e-10</td><td style='text-align:left'> 4.2536e-12</td><td style='text-align:left'>(2.60%)</td><td style='text-align:left'>6.521827259204003e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 0.67541340</td><td style='text-align:left'> 0.00239408</td><td style='text-align:left'>(0.35%)</td><td style='text-align:left'>0.6678458712078683</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.14364533</td><td style='text-align:left'> 0.00316242</td><td style='text-align:left'>(2.20%)</td><td style='text-align:left'>0.21967123158247365</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_c</td><td style='text-align:left'> 4.2462e-10</td><td style='text-align:left'> 4.6408e-12</td><td style='text-align:left'>(1.09%)</td><td style='text-align:left'>2.5602301218488093e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.33825890</td><td style='text-align:left'> 0.00744694</td><td style='text-align:left'>(2.20%)</td><td style='text-align:left'>0.5172862095550407</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>2.3548200*peak_sigma</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 4.5412e-10</td><td style='text-align:left'> 7.3369e-12</td><td style='text-align:left'>(1.62%)</td><td style='text-align:left'>1.1844212590999683e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>0.3989423*peak_amplitude/max(1e-15, peak_sigma)</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.8320</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.7861</td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.6534</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_17_2.png" src="_images/usage_example_17_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.analyze_peak(*gid.get_qxy_cut(0, 0.25), filename_prefix=f&#39;qxy_fit_result_pi_{gid.Pi}&#39;,model=&#39;voigt&#39;, save=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fitting voigt profile...
+Graph saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//qxy_fit_result_pi_35_DPPC_0PS.png
+Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//qxy_fit_result_pi_35_DPPC_0PS.txt
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: (Model(voigt, prefix='peak_') + Model(linear, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>73</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>61</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 5.3092e-17</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 9.4807e-19</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2526.70813</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2516.15376</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.96397875</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.1181e-09</td><td style='text-align:left'> 4.0833e-11</td><td style='text-align:left'>(3.65%)</td><td style='text-align:left'>1.3921267485513022e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 1.46732756</td><td style='text-align:left'> 5.2709e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>1.4630889709210735</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.00891700</td><td style='text-align:left'> 4.0213e-04</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'> 4.9982e-09</td><td style='text-align:left'> 6.2989e-10</td><td style='text-align:left'>(12.60%)</td><td style='text-align:left'>5.281351872044777e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_intercept</td><td style='text-align:left'> 5.1777e-10</td><td style='text-align:left'> 9.2271e-10</td><td style='text-align:left'>(178.21%)</td><td style='text-align:left'>-5.179515587578305e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_gamma</td><td style='text-align:left'> 0.00891700</td><td style='text-align:left'> 4.0213e-04</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>peak_sigma</td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.03211272</td><td style='text-align:left'> 0.00144818</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.026344548858876313</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>1.0692*peak_gamma+sqrt(0.8664*peak_gamma**2+5.545083*peak_sigma**2)</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 2.6170e-08</td><td style='text-align:left'> 8.7017e-10</td><td style='text-align:left'>(3.33%)</td><td style='text-align:left'>3.9718052479715894e-08</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>(peak_amplitude/(max(1e-15, peak_sigma*sqrt(2*pi))))*real(wofz((1j*peak_gamma)/(max(1e-15, peak_sigma*sqrt(2)))))</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'>bg_intercept</td><td style='text-align:right'>-0.9889</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.6867</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_18_2.png" src="_images/usage_example_18_2.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA">
+<h2>Saving a 2D image to h5 file to be explored with pyMCA<a class="headerlink" href="#Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.save_image_h5()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2D image saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_scan_[25]_2D.h5
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ESRF_ID10_SURF.XRR.html" class="btn btn-neutral float-left" title="ESRF_ID10_SURF.XRR package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Egor A. Bersenev.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
