@@ -4,7 +4,7 @@ ESRF\_ID10\_SURF.GISAXS package
 Submodules
 ----------
 
-ESRF\_ID10\_SURF.GISAXS.GISAXS module
+ESRF\_ID10\_SURF.GISAXS module
 -------------------------------------
 
 .. automodule:: ESRF_ID10_SURF.GISAXS

@@ -4,7 +4,7 @@ ESRF\_ID10\_SURF.XRR package
 Submodules
 ----------
 
-ESRF\_ID10\_SURF.XRR.XRR module
+ESRF\_ID10\_SURF.XRR module
 -------------------------------
 
 .. automodule:: ESRF_ID10_SURF.XRR

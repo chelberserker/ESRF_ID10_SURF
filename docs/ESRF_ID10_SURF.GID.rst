@@ -4,7 +4,7 @@ ESRF\_ID10\_SURF.GID package
 Submodules
 ----------
 
-ESRF\_ID10\_SURF.GID.GID module
+ESRF\_ID10\_SURF.GID module
 -------------------------------
 
 .. automodule:: ESRF_ID10_SURF.GID
