@@ -7,7 +7,7 @@ Submodules
 ESRF\_ID10\_SURF.GID.GID module
 -------------------------------
 
-.. automodule:: ESRF_ID10_SURF.GID.GID
+.. automodule:: ESRF_ID10_SURF.GID
    :members:
    :show-inheritance:
    :undoc-members:
