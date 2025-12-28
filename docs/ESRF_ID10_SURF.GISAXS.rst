@@ -7,7 +7,7 @@ Submodules
 ESRF\_ID10\_SURF.GISAXS.GISAXS module
 -------------------------------------
 
-.. automodule:: ESRF_ID10_SURF.GISAXS.GISAXS
+.. automodule:: ESRF_ID10_SURF.GISAXS
    :members:
    :show-inheritance:
    :undoc-members:

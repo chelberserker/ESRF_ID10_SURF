@@ -3,17 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-esrf_id10_surf documentation
+ESRF_ID10_SURF documentation
 ============================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+ESRF_ID10_SURF is an open-source package for processing and quick analysis of X-ray reflectometry (XRR) and Grazing Incidence Diffraction (GID) data obtained on the ID10-SURF beamline and the European Synchrotron Radiation Facility (ESRF).
 
+This code is accompanied by a simple example of usage
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    modules
+   index
    usage_example
