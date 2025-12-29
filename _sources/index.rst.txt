@@ -4,6 +4,10 @@
    contain the root `toctree` directive.
 
 
+=================
+ID10-SURF data processing
+=================
+
 Welcome to the documentation for ``esrf_id10_surf``, a Python package for analyzing surface X-ray scattering data from the ID10 beamline at the European Synchrotron Radiation Facility (ESRF).
 
 This package provides tools for processing:
