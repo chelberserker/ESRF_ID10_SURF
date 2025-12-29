@@ -17,17 +17,7 @@ pip install esrf-id10-surf
 ```
 
 ## Usage
-Detailed example is given in the jupyter notebook. 
-```python
-from ESRF_ID10_SURF.XRR import XRR
 
-# Example usage
-xrr_data = XRR(
-    file='data.h5',
-    scans=[1, 2, 3],
-    # ... other parameters
-)
+Detailed documentation and usage examples can be found here:
 
-xrr_data.apply_auto_corrections(sample_size=2, beam_size=10)
-xrr_data.plot_reflectivity()
-```
+https://chelberserker.github.io/ESRF_ID10_SURF/
