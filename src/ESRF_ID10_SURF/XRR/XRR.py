@@ -902,7 +902,6 @@ class XRR:
             Tuple[float, int]: I0 value and index of maximum intensity.
         """
         n_max = np.argmax(I)
-        # Heuristic to find background cutoff
         I_cutoff = np.mean(I[:n_max]) - np.sqrt(np.mean(I[:n_max]))
         zscan_new = I[np.where(I >= I_cutoff)]
         if len(zscan_new) > 0:
@@ -913,7 +912,7 @@ class XRR:
 
     def find_i0(self, to_print: bool = True) -> Tuple[float, Any, float]:
         """
-        Find I0, attenuator and transmission at the peak.
+        Find I0, attenuator and transmission at the direct beam.
 
         Args:
             to_print (bool, optional): Whether to print details. Defaults to True.
