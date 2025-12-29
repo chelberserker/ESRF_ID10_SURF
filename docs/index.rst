@@ -35,8 +35,4 @@ ESRF_ID10_SURF is an open-source package for processing and quick analysis of X-
 
 This code is accompanied by a simple example of usage:
 
-.. toctree::
-   :maxdepth: 4
-   :caption: Contents:
-
-   usage_example
+   Examples
