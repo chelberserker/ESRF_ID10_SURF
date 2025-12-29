@@ -1,0 +1,31 @@
+.. esrf_id10_surf documentation master file, created by
+   sphinx-quickstart on Sun Dec 28 21:56:32 2025.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+esrf_id10_surf documentation
+============================
+
+Welcome to the documentation for ``esrf_id10_surf``, a Python package for analyzing surface X-ray scattering data from the ID10 beamline at the European Synchrotron Radiation Facility (ESRF).
+
+This package provides tools for processing:
+
+*   **Grazing Incidence Diffraction (GID)**: For analyzing in-plane structure.
+*   **X-ray Reflectivity (XRR)**: For analyzing out-of-plane structure, thickness, and roughness.
+*   **Grazing Incidence Small-Angle X-ray Scattering (GISAXS)**: (Documentation in progress)
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Documentation:
+
+   GID
+   XRR
+   ESRF_ID10_SURF.GISAXS
+   usage_example
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
