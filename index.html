@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ESRF_ID10_SURF documentation &#8212; esrf_id10_surf  documentation</title>
+    <title>&lt;no title&gt; &#8212; esrf_id10_surf  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
@@ -17,7 +17,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ESRF_ID10_SURF" href="modules.html" />
+    <link rel="next" title="GID Class" href="GID.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -35,8 +35,51 @@
 
           <div class="body" role="main">
             
-  <section id="esrf-id10-surf-documentation">
-<h1>ESRF_ID10_SURF documentation<a class="headerlink" href="#esrf-id10-surf-documentation" title="Link to this heading"></a></h1>
+  <p>Welcome to the documentation for <code class="docutils literal notranslate"><span class="pre">esrf_id10_surf</span></code>, a Python package for analyzing surface X-ray scattering data from the ID10 beamline at the European Synchrotron Radiation Facility (ESRF).</p>
+<p>This package provides tools for processing:</p>
+<ul class="simple">
+<li><p><strong>Grazing Incidence Diffraction (GID)</strong>: For analyzing in-plane structure.</p></li>
+<li><p><strong>X-ray Reflectivity (XRR)</strong>: For analyzing out-of-plane structure, thickness, and roughness.</p></li>
+<li><p><strong>Grazing Incidence Small-Angle X-ray Scattering (GISAXS)</strong>: (Documentation in progress)</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GID.html">GID Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GID.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GID.html#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="XRR.html">XRR Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="XRR.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XRR.html#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html">ESRF_ID10_SURF.GISAXS package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html#module-ESRF_ID10_SURF.GISAXS">ESRF_ID10_SURF.GISAXS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html#module-0">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html">X-ray reflectivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage_example.html#Plot-and-save-reflectivity-curve">Plot and save reflectivity curve</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage_example.html#Making-q-space-cuts">Making q-space cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage_example.html#Example-of-quick-data-fitting">Example of quick data fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage_example.html#Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA">Saving a 2D image to h5 file to be explored with pyMCA</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Indices and tables</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<p>ESRF_ID10_SURF documentation</p>
 <p>ESRF_ID10_SURF is an open-source package for processing and quick analysis of X-ray reflectometry (XRR) and Grazing Incidence Diffraction (GID) data obtained on the ID10-SURF beamline and the European Synchrotron Radiation Facility (ESRF).</p>
 <p>This code is accompanied by a simple example of usage</p>
 <div class="toctree-wrapper compound">
@@ -78,7 +121,6 @@
 </li>
 </ul>
 </div>
-</section>
 
 
           </div>
@@ -106,6 +148,14 @@
     </div>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GID.html">GID Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XRR.html">XRR Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html">ESRF_ID10_SURF.GISAXS package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html">X-ray reflectivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">ESRF_ID10_SURF</a></li>
@@ -117,7 +167,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="modules.html" title="next chapter">ESRF_ID10_SURF</a></li>
+      <li>Next: <a href="GID.html" title="next chapter">GID Class</a></li>
   </ul></li>
 </ul>
 </div>
