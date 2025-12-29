@@ -38,19 +38,20 @@
             
   <section id="xrr-class">
 <h1>XRR Class<a class="headerlink" href="#xrr-class" title="Link to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">XRR</span></code> class is a specialized tool for processing X-ray Reflectivity data. X-ray Reflectivity is a powerful technique for determining the thickness, density, and roughness of thin film layers and interfaces. This class provides a robust pipeline for converting raw detector images into quantitative reflectivity curves.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">XRR</span></code> class is a tool for processing X-ray Reflectivity data obtained with a 2D detector.
+This class provides a robust pipeline for converting raw detector images into quantitative reflectivity curves.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>X-ray Reflectivity (XRR) measures the intensity of X-rays reflected from a surface as a function of the incidence angle. The resulting reflectivity curve contains interference fringes (Kiessig fringes) that are characteristic of the layer structure perpendicular to the surface.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">XRR</span></code> class simplifies the analysis of ID10 data by handling the full reduction process:</p>
 <ul class="simple">
-<li><p><strong>2D Data Reduction:</strong> The class processes 2D detector images for each point in the angular scan. It defines regions of interest (ROI) for the specular signal and the background, performing integration and subtraction to obtain the net reflected intensity.</p></li>
+<li><p><strong>2D Data Reduction:</strong> The class processes 2D detector images for each point in the XRR scan. It defines regions of interest (ROI) for the specular signal and the background, performing integration and subtraction to obtain the reflected intensity.</p></li>
 <li><p><strong>Normalization:</strong> Intensities are normalized by the direct beam monitor and transmission to account for flux variations and attenuators used during the scan.</p></li>
 <li><p><strong>Corrections:</strong>
 *   <strong>Footprint Correction:</strong> Corrects for the geometric effect where the beam footprint on the sample exceeds the sample size at low angles.
 *   <strong>Attenuator Calibration:</strong> Automatically corrects for discrepancies in transmission factors by analyzing overlapping data points (doubles) measured with different attenuator settings.</p></li>
 <li><p><strong>Data Representation:</strong> Calculates the scattering vector $q_z$ and generates the reflectivity curve $R(q_z)$.</p></li>
-<li><p><strong>Visualization:</strong> Offers methods to plot the reflectivity curve (log scale), Porod plots ($R cdot q_z^4$), and 2D reciprocal space maps ($q_x$ vs $q_z$) to inspect off-specular scattering.</p></li>
+<li><p><strong>Visualization:</strong> Offers methods to plot the reflectivity curve (log scale), $R cdot q_z^4$, and 2D reciprocal space maps ($q_x$ vs $q_z$) to inspect off-specular scattering.</p></li>
 <li><p><strong>ORSO Support:</strong> Supports saving data in the ORSO (Open Reflectometry Standards Organization) format, ensuring long-term data preservation and interoperability.</p></li>
 </ul>
 </section>
@@ -59,7 +60,7 @@
 <ul class="simple">
 <li><p><strong>Automatic Attenuation Handling:</strong> Detects and corrects for mismatches between attenuator steps, ensuring a smooth and continuous reflectivity curve.</p></li>
 <li><p><strong>Footprint Correction:</strong> Built-in geometric correction for finite sample sizes, crucial for accurate low-angle data.</p></li>
-<li><p><strong>2D Map Generation:</strong> Visualizes the intensity distribution in ($q_x, q_z$) space, allowing for the detection of diffuse scattering or sample misalignment.</p></li>
+<li><p><strong>q-space Map Generation:</strong> Visualizes the intensity distribution in ($q_x, q_z$) space, allowing for the detection of diffuse scattering or sample misalignment.</p></li>
 <li><p><strong>Standardized Output:</strong> Save results in simple ASCII formats or the rich ORSO standard format.</p></li>
 </ul>
 <dl class="py class">
@@ -685,13 +686,16 @@ Defaults to False.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ESRF_ID10_SURF.GISAXS.html">ESRF_ID10_SURF.GISAXS package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage_example.html">X-ray reflectivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html">Initializing the library, necessary imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#Definition-of-the-path-to-files-and-scan-numbers">Definition of the path to files and scan numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#X-ray-reflectivity">X-ray reflectivity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage_example.html#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">ESRF_ID10_SURF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage_example.html">X-ray reflectivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html">Initializing the library, necessary imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#Definition-of-the-path-to-files-and-scan-numbers">Definition of the path to files and scan numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_example.html#X-ray-reflectivity">X-ray reflectivity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage_example.html#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a></li>
 </ul>
 

@@ -10,7 +10,7 @@ This package provides tools for processing:
 
 *   **Grazing Incidence Diffraction (GID)**: For analyzing in-plane structure.
 *   **X-ray Reflectivity (XRR)**: For analyzing out-of-plane structure, thickness, and roughness.
-*   **Grazing Incidence Small-Angle X-ray Scattering (GISAXS)**: (Documentation in progress)
+*   **Grazing Incidence Small-Angle X-ray Scattering (GISAXS)**: (Under development)
 
 .. toctree::
    :maxdepth: 2
@@ -30,11 +30,10 @@ ESRF_ID10_SURF documentation
 
 ESRF_ID10_SURF is an open-source package for processing and quick analysis of X-ray reflectometry (XRR) and Grazing Incidence Diffraction (GID) data obtained on the ID10-SURF beamline and the European Synchrotron Radiation Facility (ESRF).
 
-This code is accompanied by a simple example of usage
+This code is accompanied by a simple example of usage:
 
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
 
-   modules
    usage_example
