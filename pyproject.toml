@@ -8,7 +8,7 @@ dynamic = ["version"]
 authors = [
   { name="Egor A. Bersenev", email="egor.bersenev@esrf.fr" },
 ]
-description = "A package for analyzing surface X-ray scattering data from the ID10 beamline at the ESRF."
+description = "A package for analyzing surface X-ray scattering data from the ID10-SURF beamline at the ESRF."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
