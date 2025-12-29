@@ -18,8 +18,7 @@ This package provides tools for processing:
 
    GID
    XRR
-   ESRF_ID10_SURF.GISAXS
-   usage_example
+   GISAXS
 
 Indices and tables
 
