@@ -15,6 +15,8 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="GID Class" href="GID.html" />
@@ -41,7 +43,8 @@
 This class provides a robust pipeline for converting raw detector images into quantitative reflectivity curves.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>X-ray Reflectivity (XRR) measures the intensity of X-rays reflected from a surface as a function of the incidence angle. The resulting reflectivity curve contains interference fringes (Kiessig fringes) that are characteristic of the layer structure perpendicular to the surface.</p>
+<p>X-ray Reflectivity (XRR) measures the intensity of X-rays reflected from a surface as a function of the incidence angle.
+The resulting reflectivity curve contains interference fringes (Kiessig fringes) that are characteristic of the Scattering Length Density (SLD) profile perpendicular to the surface.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">XRR</span></code> class simplifies the analysis of ID10 data by handling the full reduction process:</p>
 <ul class="simple">
 <li><p><strong>2D Data Reduction:</strong> The class processes 2D detector images for each point in the XRR scan. It defines regions of interest (ROI) for the specular signal and the background, performing integration and subtraction to obtain the reflected intensity.</p></li>
@@ -50,7 +53,7 @@ This class provides a robust pipeline for converting raw detector images into qu
 *   <strong>Footprint Correction:</strong> Corrects for the geometric effect where the beam footprint on the sample exceeds the sample size at low angles.
 *   <strong>Attenuator Calibration:</strong> Automatically corrects for discrepancies in transmission factors by analyzing overlapping data points (doubles) measured with different attenuator settings.</p></li>
 <li><p><strong>Data Representation:</strong> Calculates the scattering vector $q_z$ and generates the reflectivity curve $R(q_z)$.</p></li>
-<li><p><strong>Visualization:</strong> Offers methods to plot the reflectivity curve (log scale), $R cdot q_z^4$, and 2D reciprocal space maps ($q_x$ vs $q_z$) to inspect off-specular scattering.</p></li>
+<li><p><strong>Visualization:</strong> Offers methods to plot the reflectivity curve (log scale), <span class="math notranslate nohighlight">\(R \cdot q_z^4\)</span>, and 2D reciprocal space maps (<span class="math notranslate nohighlight">\(q_x\)</span> vs <span class="math notranslate nohighlight">\(q_z\)</span>) to inspect off-specular scattering.</p></li>
 <li><p><strong>ORSO Support:</strong> Supports saving data in the ORSO (Open Reflectometry Standards Organization) format, ensuring long-term data preservation and interoperability.</p></li>
 </ul>
 </section>

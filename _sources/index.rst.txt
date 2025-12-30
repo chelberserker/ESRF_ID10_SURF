@@ -4,6 +4,18 @@
    contain the root `toctree` directive.
 
 
+.. image:: https://img.shields.io/pypi/v/esrf_id10_surf.svg
+    :target: https://pypi.org/project/esrf_id10_surf/
+    :alt: PyPI version
+
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+    :target: https://opensource.org/licenses/MIT
+    :alt: License: MIT
+
+.. image:: https://img.shields.io/pypi/pyversions/esrf_id10_surf.svg
+    :target: https://pypi.org/project/esrf_id10_surf/
+    :alt: Python Versions
+
 =================
 ID10-SURF data processing
 =================
