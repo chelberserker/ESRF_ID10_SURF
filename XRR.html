@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>XRR Class &#8212; esrf_id10_surf  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -17,24 +17,31 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="GID Class" href="GID.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-  
-
+    <link rel="prev" title="GID Class" href="GID.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GID.html" title="GID Class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">esrf_id10_surf  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">XRR Class</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <section id="xrr-class">
@@ -47,6 +54,7 @@ This class provides a robust pipeline for converting raw detector images into qu
 The resulting reflectivity curve contains interference fringes (Kiessig fringes) that are characteristic of the Scattering Length Density (SLD) profile perpendicular to the surface.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">XRR</span></code> class simplifies the analysis of ID10 data by handling the full reduction process:</p>
 <ul class="simple">
+<li><p><strong>Data loading</strong> Class instance loads the 2D detector images and metadata from file.</p></li>
 <li><p><strong>2D Data Reduction:</strong> The class processes 2D detector images for each point in the XRR scan. It defines regions of interest (ROI) for the specular signal and the background, performing integration and subtraction to obtain the reflected intensity.</p></li>
 <li><p><strong>Normalization:</strong> Intensities are normalized by the direct beam monitor and transmission to account for flux variations and attenuators used during the scan.</p></li>
 <li><p><strong>Corrections:</strong>
@@ -654,75 +662,118 @@ Defaults to False.</p></li>
 </section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">esrf_id10_surf</a></h1>
-
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="GID.html">GID Class</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">XRR Class</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a></li>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">XRR Class</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#key-features">Key Features</a><ul>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR"><code class="docutils literal notranslate"><span class="pre">XRR</span></code></a><ul>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.file"><code class="docutils literal notranslate"><span class="pre">XRR.file</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.scans"><code class="docutils literal notranslate"><span class="pre">XRR.scans</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.alpha_i_name"><code class="docutils literal notranslate"><span class="pre">XRR.alpha_i_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.detector_name"><code class="docutils literal notranslate"><span class="pre">XRR.detector_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.monitor_name"><code class="docutils literal notranslate"><span class="pre">XRR.monitor_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.transmission_name"><code class="docutils literal notranslate"><span class="pre">XRR.transmission_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.att_name"><code class="docutils literal notranslate"><span class="pre">XRR.att_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.energy_name"><code class="docutils literal notranslate"><span class="pre">XRR.energy_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.cnttime_name"><code class="docutils literal notranslate"><span class="pre">XRR.cnttime_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.PX0"><code class="docutils literal notranslate"><span class="pre">XRR.PX0</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.PY0"><code class="docutils literal notranslate"><span class="pre">XRR.PY0</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.dPX"><code class="docutils literal notranslate"><span class="pre">XRR.dPX</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.dPY"><code class="docutils literal notranslate"><span class="pre">XRR.dPY</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.pixel_size_qxz"><code class="docutils literal notranslate"><span class="pre">XRR.pixel_size_qxz</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.pixel_size_qy"><code class="docutils literal notranslate"><span class="pre">XRR.pixel_size_qy</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.I0"><code class="docutils literal notranslate"><span class="pre">XRR.I0</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.footprint_correction_applied"><code class="docutils literal notranslate"><span class="pre">XRR.footprint_correction_applied</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.corrected_doubles"><code class="docutils literal notranslate"><span class="pre">XRR.corrected_doubles</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.replaced_transmission"><code class="docutils literal notranslate"><span class="pre">XRR.replaced_transmission</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.is_rebinned"><code class="docutils literal notranslate"><span class="pre">XRR.is_rebinned</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.qz"><code class="docutils literal notranslate"><span class="pre">XRR.qz</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.reflectivity"><code class="docutils literal notranslate"><span class="pre">XRR.reflectivity</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.reflectivity_error"><code class="docutils literal notranslate"><span class="pre">XRR.reflectivity_error</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.Smap2D"><code class="docutils literal notranslate"><span class="pre">XRR.Smap2D</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.Smap2D_e"><code class="docutils literal notranslate"><span class="pre">XRR.Smap2D_e</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.Qx_map"><code class="docutils literal notranslate"><span class="pre">XRR.Qx_map</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.Qz_map"><code class="docutils literal notranslate"><span class="pre">XRR.Qz_map</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.sample_name"><code class="docutils literal notranslate"><span class="pre">XRR.sample_name</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.find_i0_from_z_scan"><code class="docutils literal notranslate"><span class="pre">XRR.find_i0_from_z_scan()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.apply_auto_corrections"><code class="docutils literal notranslate"><span class="pre">XRR.apply_auto_corrections()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.assert_i0"><code class="docutils literal notranslate"><span class="pre">XRR.assert_i0()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.calculate_corrected_transmission"><code class="docutils literal notranslate"><span class="pre">XRR.calculate_corrected_transmission()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.correct_doubles"><code class="docutils literal notranslate"><span class="pre">XRR.correct_doubles()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.do_rebin"><code class="docutils literal notranslate"><span class="pre">XRR.do_rebin()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.find_i0"><code class="docutils literal notranslate"><span class="pre">XRR.find_i0()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.footprint_correction"><code class="docutils literal notranslate"><span class="pre">XRR.footprint_correction()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.get_reflectivity"><code class="docutils literal notranslate"><span class="pre">XRR.get_reflectivity()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.plot_Qmap"><code class="docutils literal notranslate"><span class="pre">XRR.plot_Qmap()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.plot_reflectivity"><code class="docutils literal notranslate"><span class="pre">XRR.plot_reflectivity()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.plot_reflectivity_qz4"><code class="docutils literal notranslate"><span class="pre">XRR.plot_reflectivity_qz4()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.produce_Qmap"><code class="docutils literal notranslate"><span class="pre">XRR.produce_Qmap()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.replace_transmission"><code class="docutils literal notranslate"><span class="pre">XRR.replace_transmission()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.reprocess"><code class="docutils literal notranslate"><span class="pre">XRR.reprocess()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.save_reflectivity"><code class="docutils literal notranslate"><span class="pre">XRR.save_reflectivity()</span></code></a></li>
+<li><a class="reference internal" href="#ESRF_ID10_SURF.XRR.XRR.show_detector_image"><code class="docutils literal notranslate"><span class="pre">XRR.show_detector_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="GID.html" title="previous chapter">GID Class</a></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="GID.html"
+                          title="previous chapter">GID Class</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/XRR.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &#169;2025, Egor A. Bersenev.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-      |
-      <a href="_sources/XRR.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GID.html" title="GID Class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">esrf_id10_surf  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">XRR Class</a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Egor A. Bersenev.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
   </body>
 </html>

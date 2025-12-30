@@ -28,6 +28,23 @@ This package provides tools for processing:
 *   **X-ray Reflectivity (XRR)**: For analyzing out-of-plane structure, thickness, and roughness.
 *   **Grazing Incidence Small-Angle X-ray Scattering (GISAXS)**: (Under development)
 
+------------------------
+Installation
+------------------------
+
+To install the library create a virtual environment and run:
+
+   pip install esrf-id10-surf
+
+If you would like to install the library and modify the code to see the effects immediately:
+
+   git clone https://github.com/chelberserker/ESRF_ID10_SURF
+   cd ESRF_ID10_SURF
+   pip install -e .
+
+------------------------
+Documentation
+------------------------
 .. toctree::
    :maxdepth: 2
    :caption: Documentation:
@@ -41,9 +58,11 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-ESRF_ID10_SURF documentation
 
-ESRF_ID10_SURF is an open-source package for processing and quick analysis of X-ray reflectometry (XRR) and Grazing Incidence Diffraction (GID) data obtained on the ID10-SURF beamline and the European Synchrotron Radiation Facility (ESRF).
+
+------------------------
+Usage examples
+------------------------
 
 This code is accompanied by a simple example of usage:
 
