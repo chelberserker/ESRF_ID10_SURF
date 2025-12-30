@@ -1,3 +1,9 @@
+[![PyPI version](https://img.shields.io/pypi/v/esrf_id10_surf.svg)](https://pypi.org/project/esrf_id10_surf/)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![Python Versions](https://img.shields.io/pypi/pyversions/esrf_id10_surf.svg)](https://pypi.org/project/esrf_id10_surf/)
+
 # ESRF ID10-SURF Data Analysis
 
 This package provides a collection of tools for analyzing surface X-ray scattering data from the ID10-SURF beamline at the European Synchrotron Radiation Facility (ESRF).
