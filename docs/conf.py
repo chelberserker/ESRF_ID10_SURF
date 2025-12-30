@@ -38,3 +38,6 @@ autodoc_typehints = "description" # Moves type hints into the description instea
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+html_theme = 'classic'
+html_static_path = ['_static']

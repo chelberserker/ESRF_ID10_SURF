@@ -12,6 +12,7 @@ The resulting reflectivity curve contains interference fringes (Kiessig fringes)
 
 The ``XRR`` class simplifies the analysis of ID10 data by handling the full reduction process:
 
+*   **Data loading** Class instance loads the 2D detector images and metadata from file.
 *   **2D Data Reduction:** The class processes 2D detector images for each point in the XRR scan. It defines regions of interest (ROI) for the specular signal and the background, performing integration and subtraction to obtain the reflected intensity.
 *   **Normalization:** Intensities are normalized by the direct beam monitor and transmission to account for flux variations and attenuators used during the scan.
 *   **Corrections:**

@@ -22,6 +22,14 @@ To install the package use pip:
 pip install esrf-id10-surf
 ```
 
+If you would like to install the library and modify the code to see the effects immediately:
+
+```bash
+git clone https://github.com/chelberserker/ESRF_ID10_SURF
+cd ESRF_ID10_SURF
+pip install -e .
+```
+
 ## Usage
 
 Detailed documentation and usage examples can be found here:
