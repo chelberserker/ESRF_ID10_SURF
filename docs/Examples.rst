@@ -1,3 +1,5 @@
+.. _Examples:
+
 Examples gallery
 =========
 
@@ -5,4 +7,4 @@ Examples gallery
    :maxdepth: 4
    :caption: Contents:
 
-usage_example
+   usage_example

@@ -22,6 +22,7 @@ dependencies = [
     "h5py",
     "lmfit",
     "scipy",
+    "orsopy"
 ]
 
 [tool.setuptools]
