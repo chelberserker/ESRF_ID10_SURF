@@ -1,7 +1,5 @@
 [![PyPI version](https://img.shields.io/pypi/v/esrf_id10_surf.svg)](https://pypi.org/project/esrf_id10_surf/)
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 [![Python Versions](https://img.shields.io/pypi/pyversions/esrf_id10_surf.svg)](https://pypi.org/project/esrf_id10_surf/)
 
 # ESRF ID10-SURF Data Analysis
