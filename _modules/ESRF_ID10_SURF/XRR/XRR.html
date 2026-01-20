@@ -458,6 +458,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reflectivity</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reflectivity</span> <span class="o">&lt;=</span> <span class="mf">1e-12</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reflectivity_error</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reflectivity_error</span> <span class="o">&lt;=</span> <span class="mf">1e-13</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-13</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">Smap2D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Smap2D</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Smap2D_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Smap2D_e</span><span class="p">)</span>
+
         <span class="c1">#logger.info(&quot;Processing completed. Processing time %3.3f sec&quot;, time.time() - t0)</span>
 
 <div class="viewcode-block" id="XRR.footprint_correction">
@@ -581,7 +584,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qx_map</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qz_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
              <span class="bp">self</span><span class="o">.</span><span class="n">produce_Qmap</span><span class="p">()</span>
 
-        <span class="n">ax0</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qx_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qz_map</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Smap2D</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">ax0</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qx_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qz_map</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Smap2D</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                        <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;gouraud&#39;</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">ax0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$q_x, \AA^{-1}$&#39;</span><span class="p">)</span>
@@ -594,6 +597,43 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;Qmap_</span><span class="si">{}</span><span class="s1">_scan_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scans</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax0</span></div>
+
+
+<div class="viewcode-block" id="XRR.save_Qmap">
+<a class="viewcode-back" href="../../../XRR.html#ESRF_ID10_SURF.XRR.XRR.save_Qmap">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_Qmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the Q-space map to a text file. Format is 3 columns: Q_x, Q_z, Intensity</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            log_scale (bool, optional): Whether to save the logarithm of intensity to the file. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qx_map</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qz_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">produce_Qmap</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_sample_dir</span><span class="p">()</span>
+
+        <span class="n">map_qx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qx_map</span><span class="p">)</span>
+        <span class="n">map_qz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qz_map</span><span class="p">)</span>
+        <span class="n">map_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Smap2D</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">log_scale</span><span class="p">:</span>
+            <span class="n">map_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">map_int</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">map_qx</span><span class="p">,</span> <span class="n">map_qz</span><span class="p">,</span> <span class="n">map_int</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pi</span><span class="o">&lt;</span><span class="mi">80</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saving_dir</span> <span class="o">+</span> <span class="s1">&#39;/</span><span class="si">{}</span><span class="s1">_2DMap_scan_</span><span class="si">{}</span><span class="s1">_Pi_</span><span class="si">{:.0f}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sample_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pi</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saving_dir</span> <span class="o">+</span> <span class="s1">&#39;/</span><span class="si">{}</span><span class="s1">_XRR_scan_</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sample_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scans</span><span class="p">)</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Q-space map in text saved to: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+
+
 
 
 <div class="viewcode-block" id="XRR.get_reflectivity">
