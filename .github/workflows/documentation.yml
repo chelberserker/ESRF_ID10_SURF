@@ -30,7 +30,7 @@ jobs:
 
       - name: Duplicate example
         run: |
-          mv usage_example.ipynb /docs/usage_example.ipynb
+          cp usage_example.ipynb ./docs/
 
       - name: Build documentation
         run: |
