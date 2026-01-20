@@ -10,5 +10,8 @@ Examples gallery
 ----------------------------
 Basic usage
 ----------------------------
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
-   usage_example
+    usage_example
