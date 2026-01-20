@@ -20,12 +20,17 @@ jobs:
         with:
           python-version: '3.12'
 
+
       - name: Install dependencies
         run: |
           sudo apt-get update && sudo apt-get install -y pandoc
           pip install --upgrade pip
           pip install sphinx sphinx_rtd_theme nbsphinx orsopy
           pip install -e .
+
+      - name: Duplicate example
+        run: |
+          mv usage_example.ipynb /docs/usage_example.ipynb
 
       - name: Build documentation
         run: |
