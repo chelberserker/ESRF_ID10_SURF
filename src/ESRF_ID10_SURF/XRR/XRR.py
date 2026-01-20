@@ -415,6 +415,9 @@ class XRR:
         self.reflectivity[self.reflectivity <= 1e-12] = 1e-12
         self.reflectivity_error[self.reflectivity_error <= 1e-13] = 1e-13
 
+        self.Smap2D = np.array(self.Smap2D)
+        self.Smap2D_e = np.array(self.Smap2D_e)
+
         #logger.info("Processing completed. Processing time %3.3f sec", time.time() - t0)
 
     def footprint_correction(self, sample_size: float = 1.0, beam_size: float = 9.6, correct_dir_beam: bool = True):
@@ -524,7 +527,7 @@ class XRR:
         if self.Qx_map is None or self.Qz_map is None:
              self.produce_Qmap()
 
-        ax0.pcolormesh(self.Qx_map, self.Qz_map, np.log10(self.Smap2D), cmap='jet', vmin=4, vmax=10,
+        ax0.pcolormesh(self.Qx_map, self.Qz_map, np.log10(self.Smap2D), cmap='viridis', vmin=2, vmax=10,
                        shading='gouraud', snap=True)
 
         ax0.set_xlabel(r'$q_x, \AA^{-1}$')
@@ -537,6 +540,40 @@ class XRR:
             plt.savefig('Qmap_{}_scan_{}.png'.format(self.sample_name, self.scans), dpi=300)
 
         return fig, ax0
+
+    def save_Qmap(self, log_scale=False):
+        """
+        Save the Q-space map to a text file. Format is 3 columns: Q_x, Q_z, Intensity
+
+        Args:
+            log_scale (bool, optional): Whether to save the logarithm of intensity to the file. Defaults to False.
+        """
+        if self.Qx_map is None or self.Qz_map is None:
+             self.produce_Qmap()
+
+        self._ensure_sample_dir()
+
+        map_qx = np.ravel(self.Qx_map)
+        map_qz = np.ravel(self.Qz_map)
+        map_int = np.ravel(self.Smap2D)
+
+        if log_scale:
+            map_int = np.log10(map_int)
+
+        out = np.array([map_qx, map_qz, map_int]).T
+
+        if self.Pi<80:
+            filename = self.saving_dir + '/{}_2DMap_scan_{}_Pi_{:.0f}.dat'.format(
+                self.sample_name, self.scans, self.Pi)
+        else:
+            filename = self.saving_dir + '/{}_XRR_scan_{}.dat'.format(
+                self.sample_name, self.scans)
+
+        np.savetxt(filename, out)
+
+        logger.info('Q-space map in text saved to: %s', filename)
+
+
 
     def get_reflectivity(self) -> np.ndarray:
         """

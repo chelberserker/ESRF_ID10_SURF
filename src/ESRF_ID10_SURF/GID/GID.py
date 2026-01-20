@@ -705,3 +705,32 @@ class GID:
             print(f"2D image saved to {filename}")
         except Exception as e:
             print(f"Error saving H5 file: {e}")
+
+    def save_image_dat(self, filename=None):
+        """
+        Save the intensity map, qxy axis, and qz axis.
+
+        Args:
+            filename (str, optional): The name of the file to save. If None, it is auto-generated.
+        """
+
+        if filename is None:
+            self._ensure_sample_dir()
+            filename = self.saving_dir +'/GID_{}_scan_{}_2D.dat'.format(self.sample_name, self.scans)
+
+        qxy_size = len(self.qxy)
+        qz_size = len(self.qz)
+
+        qxy_out = np.ravel(np.outer(self.qxy,np.ones(qz_size)))
+        qz_out = np.ravel(np.tile(self.qz, qxy_size))
+        image_out = np.ravel(self.data_gap)
+
+        out = np.array([qxy_out, qz_out, image_out]).T
+        try:
+            np.savetxt(filename, out)
+            print(f"2D image saved to {filename}")
+        except Exception as e:
+            print(f"Error saving GID image as .dat file: {e}")
+
+
+
