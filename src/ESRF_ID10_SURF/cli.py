@@ -74,7 +74,8 @@ def main():
 
             if saving == 'default':
                 if 'RAW_DATA' in filename:
-                    saving_dir = filename.replace('RAW_DATA', 'PROCESSED_DATA')
+                    file_dir, name_file = os.path.split(filename)
+                    saving_dir = file_dir.replace('RAW_DATA', 'PROCESSED_DATA')
                 else:
                     logging.info(
                         'Filename does not contain RAW_DATA. Files will be saved into the current working directory.')
@@ -135,6 +136,7 @@ def main():
                     processor.save_reflectivity(format='dat')
 
                     processor.save_reflectivity(format='orso', owner=owner, creator=user)
+                    processor.plot_reflectivity(save=True)
                     
                 except Exception as e:
                     print(f"Error processing XRR scan {scan_item} in {filename}: {e}")
@@ -151,7 +153,8 @@ def main():
 
             if saving == 'default':
                 if 'RAW_DATA' in filename:
-                    saving_dir = filename.replace('RAW_DATA', 'PROCESSED_DATA')
+                    file_dir, name_file = os.path.split(filename)
+                    saving_dir = file_dir.replace('RAW_DATA', 'PROCESSED_DATA')
                 else:
                     logging.info(
                         'Filename does not contain RAW_DATA. Files will be saved into the current working directory.')
@@ -166,10 +169,10 @@ def main():
                     # Parse parameters
                     alpha_i = setup_gid.get('alpha_i_name', 'mu')
                     monitor = setup_gid.get('monitor_name', 'ionch2')
-                    px0 = int(setup_xrr.get('PX0', 404))
-                    ppd = int(setup_xrr.get('PPD', 165))
-                    mythen_gap = int(setup_xrr.get('mythen_gap', 100))
-                    I0 = int(setup_xrr.get('I0', 1e12))
+                    px0 = int(setup_gid.get('PX0', 404))
+                    ppd = int(setup_gid.get('PPD', 165))
+                    mythen_gap = int(setup_gid.get('mythen_gap', 100))
+                    I0 = float(setup_gid.get('I0', 1e12))
 
                     gid_scans = []
 
@@ -180,98 +183,15 @@ def main():
                         print(f"Error parsing GID scan {scan_item}: {e}")
 
                     try:
-                        gid_processor = GID(filename, gid_scans, PX0=px0, PPD=ppd, mythen_gap=mythen_gap, alpha_i_name=alpha_i, I0=I0, saving_dir=saving_dir)
+                        gid_processor = GID(filename, gid_scans, PX0=px0, PPD=ppd, mythen_gap=mythen_gap, alpha_i_name=alpha_i, monitor_name=monitor, I0=I0, saving_dir=saving_dir)
                         gid_processor.plot_quick_analysis(save=True)
+                        gid_processor.save_image_h5()
                     except Exception as e:
                         logging.error(f"Error processing GID scan {scan_item}: {e}")
 
                 except Exception as e:
-                    logging.error(f"Error parsing GID scan in file {filename}: {e}")
+                    logging.error(f"Error parsing GID scan setup parameters: {e}")
 
-
-
-    # Fallback to single file mode logic IF 'filename' is at top level (backward compatibility)
-    if 'filename' in config:
-        print("Detected legacy/single-file config.")
-        process_single_config(config)
-
-def process_single_config(config):
-    # Relocated original logic here for backward compatibility
-    filename = config['filename']
-    mode = config['mode'].lower()
-    
-    if mode not in ['xrr', 'gid']:
-        print(f"Error: Invalid mode '{mode}'. Must be 'xrr' or 'gid'.")
-        return
-        
-    try:
-        scans = parse_scans(str(config['scans']))
-    except ValueError as e:
-        print(f"Error parsing scan numbers: {e}")
-        return
-
-    if not os.path.exists(filename):
-        print(f"Error: Data file '{filename}' not found.")
-        return
-
-    print(f"Processing {mode.upper()} for scans {scans} in {filename}")
-
-    # Save options
-    save_opts = config.get('save', {})
-    save_dat = save_opts.get('dat', False)
-    save_orso = save_opts.get('orso', False)
-    owner = save_opts.get('owner', 'ESRF')
-    creator = save_opts.get('creator', 'opid10')
-
-    if mode == 'xrr':
-        xrr_conf = config.get('xrr', {})
-        # Handle case where xrr is list (batch) vs dict (single)
-        # In single config, xrr is dict.
-        if isinstance(xrr_conf, list):
-             # This function is for single mode, but config has xrr list? Ambiguous.
-             # We assume if 'filename' is top level, 'xrr' dict params might be in 'xrr' key if valid dict
-             xrr_conf = {}
-
-        alpha_i = xrr_conf.get('alpha_i', 'mu')
-        
-        if alpha_i == "mu":
-            monitor = "ionch2"
-        else:
-            monitor = "mon"
-            
-        if 'monitor' in xrr_conf:
-            monitor = xrr_conf['monitor']
-            
-        px0 = xrr_conf.get('px0', 404)
-        py0 = xrr_conf.get('py0', 165)
-
-        processor = XRR(filename, scans, alpha_i_name=alpha_i, monitor_name=monitor, PX0=px0, PY0=py0)
-        
-        z_scan = xrr_conf.get('z_scan')
-        if z_scan:
-            try:
-                z_scans = parse_scans(str(z_scan))
-                z_processor = XRR(filename, z_scans, alpha_i_name='zgH', monitor_name=monitor, PX0=px0, PY0=py0)
-                
-                sample_size = float(xrr_conf.get('sample_size', 1.0))
-                beam_size = float(xrr_conf.get('beam_size', 10.0))
-                
-                processor.apply_auto_corrections(sample_size=sample_size, beam_size=beam_size, z_scan=z_processor)
-            except Exception as e:
-                print(f"Error applying auto-corrections: {e}")
-        
-        if save_dat:
-            processor.save_reflectivity(format='dat')
-            
-        if save_orso:
-            processor.save_reflectivity(format='orso', owner=owner, creator=creator)
-
-    elif mode == 'gid':
-        processor = GID(filename, scans)
-        if save_dat:
-             processor.save_image_h5()
-        if save_orso:
-            print("Warning: ORSO saving is not supported for GID mode. Ignoring save.orso=True.")
 
 if __name__ == "__main__":
     main()

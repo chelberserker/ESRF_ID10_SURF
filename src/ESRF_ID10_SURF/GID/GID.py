@@ -693,24 +693,26 @@ class GID:
         """
         if filename is None:
             self._ensure_sample_dir()
-            filename = self.saving_dir +'/GID_{}_scan_{}_2D.h5'.format(
+            filename = self.saving_dir +'/GID_{}_2D.h5'.format(
                 self.sample_name, self.scans)
 
         try:
-            with h5py.File(filename, 'w') as hf:
-                hf.create_dataset('intensity', data=self.data_gap)
-                hf.create_dataset('qxy', data=self.qxy)
-                hf.create_dataset('qz', data=self.qz)
+            with h5py.File(filename, 'a') as hf:
+                scan = hf.create_group(str(self.scans))
 
-                # Add metadata
-                hf.attrs['sample_name'] = self.sample_name
-                hf.attrs['pi'] = self.Pi
-                hf.attrs['scans'] = self.scans
-                hf.attrs['energy'] = self.energy
-            print(f"2D image saved to {filename}")
+                scan.create_dataset('intensity', data=self.data_gap)
+                scan.create_dataset('qxy', data=self.qxy)
+                scan.create_dataset('qz', data=self.qz)
+
+                    # Add metadata
+                scan.attrs['sample_name'] = self.sample_name
+                scan.attrs['pi'] = self.Pi
+                scan.attrs['scans'] = self.scans
+                scan.attrs['energy'] = self.energy
+                scan.attrs['alpha_i'] = self.alpha_i
+                print(f"2D image saved to {filename}")
         except Exception as e:
-            print(f"Error saving H5 file: {e}")
-
+            print(f"Scan already processed and saved to h5: {e}")
     def save_image_dat(self, filename=None):
         """
         Save the intensity map, qxy axis, and qz axis.
