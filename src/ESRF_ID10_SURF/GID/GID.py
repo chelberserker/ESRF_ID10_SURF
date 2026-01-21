@@ -472,14 +472,17 @@ class GID:
         filename = self.saving_dir + f'/qz_cut_{qxy_min}_{qxy_max}_A.png' if save else None
         self._plot_cut(qz, cut_qz, '$q_{z}, \\AA^{-1}$', 'Intensity', label, ax, save, filename, **kwargs)
 
-    def plot_quick_analysis(self, save=False):
+    def plot_quick_analysis(self, save=False, fig=None):
         """
         Perform a quick standard analysis plot including the 2D map and representative qxy cuts.
 
         Args:
             save (bool, optional): Whether to save the figure. Defaults to False.
         """
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(6, 6), layout='tight')
+        if fig is None:
+            fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(6, 6), layout='tight')
+        else:
+            ax = fig.subplots(1,2)
 
         self.plot_2D_image(ax=ax[0])
 
@@ -487,9 +490,9 @@ class GID:
         ax[0].set_ylim(0, 1.5)
         ax[0].set_xlim(np.min(self.qxy), np.max(self.qxy))
 
-        # Example lines, these should probably be configurable
-        # ax[0].hlines([0.01, 0.3], 1.2, 1.6, linestyle='--', alpha=0.8, color='C0')
-        # ax[0].hlines([0.5, 0.95], 1.2, 1.6, linestyle='--', alpha=0.8, color='C1')
+        # Cut lines
+        ax[0].hlines([0.01, 0.3], 1.2, 1.6, linestyle='--', alpha=0.8, color='C0')
+        ax[0].hlines([0.5, 0.95], 1.2, 1.6, linestyle='--', alpha=0.8, color='C1')
 
         self.plot_qxy_cut(0.01, 0.3, ax=ax[1])
         self.plot_qxy_cut(0.5, 0.95, ax=ax[1])
@@ -499,6 +502,8 @@ class GID:
         if save:
             print('Saving standard GID plot.')
             self._save_figure(fig, 'quick_analysis')
+
+        return fig, ax
 
     def _check_saving_dir(self):
         """
