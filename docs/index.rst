@@ -51,7 +51,8 @@ Documentation
 
    GID
    XRR
-   GISAXS
+   GIXS
+   CLI
 
 Indices and tables
 
