@@ -822,7 +822,91 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2D image saved to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error saving GID image as .dat file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GID.line_step">
+<a class="viewcode-back" href="../../../GID.html#ESRF_ID10_SURF.GID.GID.line_step">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">step_pos</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="n">line_y</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">slope</span>
+        <span class="n">step_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">step_y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">step_pos</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">step</span>
+        <span class="n">line_step</span> <span class="o">=</span> <span class="n">line_y</span> <span class="o">+</span> <span class="n">step_y</span>
+        <span class="k">return</span> <span class="n">line_step</span></div>
+
+
+<div class="viewcode-block" id="GID.line_step_fitting">
+<a class="viewcode-back" href="../../../GID.html#ESRF_ID10_SURF.GID.GID.line_step_fitting">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_step_fitting</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># unpack parameters: extract .value attribute for each parameter</span>
+        <span class="n">parvals</span> <span class="o">=</span> <span class="n">pars</span><span class="o">.</span><span class="n">valuesdict</span><span class="p">()</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">parvals</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span>
+        <span class="n">intercept</span> <span class="o">=</span> <span class="n">parvals</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">parvals</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+        <span class="n">step_pos</span> <span class="o">=</span> <span class="n">parvals</span><span class="p">[</span><span class="s1">&#39;step_pos&#39;</span><span class="p">]</span>
+
+        <span class="n">line_y</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">slope</span>
+        <span class="n">step_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">step_y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">step_pos</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">step</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">line_y</span> <span class="o">+</span> <span class="n">step_y</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GID.calibrate_mythen">
+<a class="viewcode-back" href="../../../GID.html#ESRF_ID10_SURF.GID.GID.calibrate_mythen">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calibrate_mythen</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scanN</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="n">detector_name</span> <span class="o">=</span> <span class="s1">&#39;mythen2&#39;</span>
+        <span class="n">angle_name</span> <span class="o">=</span> <span class="s1">&#39;gam&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calibrating Mythen from scan #</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scanN</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># Using [()] to read dataset into numpy array immediately</span>
+                <span class="n">mythen</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scanN</span><span class="si">}</span><span class="s2">.1/measurement/</span><span class="si">{</span><span class="n">detector_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)[()]</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scanN</span><span class="si">}</span><span class="s2">.1/measurement/</span><span class="si">{</span><span class="n">angle_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)[()]</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading scan </span><span class="si">{</span><span class="n">scanN</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">beam_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">mythen</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">beam_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mythen</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">beam_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">beam_pos</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">beam_int</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mythen</span><span class="p">))</span>
+
+        <span class="n">gap_cen</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">angle</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">])</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">angle</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">fit_params</span> <span class="o">=</span> <span class="n">lmfit</span><span class="o">.</span><span class="n">create_params</span><span class="p">(</span><span class="n">slope</span><span class="o">=-</span><span class="mi">170</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step_pos</span><span class="o">=</span><span class="n">gap_cen</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">lmfit</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">GID</span><span class="o">.</span><span class="n">line_step_fitting</span><span class="p">,</span> <span class="n">fit_params</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">angle</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">],),</span>
+                             <span class="n">kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">beam_pos</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]})</span>
+
+        <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">beam_pos</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">GID</span><span class="o">.</span><span class="n">line_step_fitting</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;gam, degree&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;beam position, px&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">angle</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">angle</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">beam_pos</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">beam_pos</span><span class="p">[</span><span class="o">~</span><span class="n">beam_pos</span><span class="o">.</span><span class="n">mask</span><span class="p">]))</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;PPD = </span><span class="si">{</span><span class="o">-</span><span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="se">\n</span><span class="s2">mythen_gap = </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="n">ppd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="o">-</span><span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ppd</span><span class="p">,</span> <span class="n">gap</span></div>
 </div>
+
+
+
 
 
 

@@ -181,7 +181,7 @@ refl.plot_Qmap()
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 Starting q-space mapping.
-2D map calculated. Processing time 0.478 sec
+2D map calculated. Processing time 0.476 sec
 /home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:530: RuntimeWarning: divide by zero encountered in log10
   ax0.pcolormesh(self.Qx_map, self.Qz_map, np.log10(self.Smap2D), cmap=&#39;viridis&#39;, vmin=2, vmax=10,
 /home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:530: RuntimeWarning: invalid value encountered in log10
@@ -210,12 +210,41 @@ Starting q-space mapping.
 </section>
 <section id="Grazing-Incidence-Diffraction">
 <h1>Grazing Incidence Diffraction<a class="headerlink" href="#Grazing-Incidence-Diffraction" title="Link to this heading"></a></h1>
+<section id="Calibration-of-Mythen-detector">
+<h2>Calibration of Mythen detector<a class="headerlink" href="#Calibration-of-Mythen-detector" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid = GID(file, gid_ScanN_list, PX0=50, PPD=198.5, mythen_gap=90, alpha_i_name=&#39;mu&#39;, I0=2e12, saving_dir=SavingDir)
-gid.plot_quick_analysis(save=True)
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>calibration_filename = &#39;/mnt/data/ls3582/id10-surf/20251120/RAW_DATA/eh1_exp_2025_11_17/eh1_exp_2025_11_17_0001/eh1_exp_2025_11_17_0001.h5&#39;
+PPD, mythen_gap = GID.calibrate_mythen(filename=calibration_filename, scanN=59, plot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Calibrating Mythen from scan #59
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/usage_example_11_1.png" src="_images/usage_example_11_1.png" />
+</div>
+</div>
+</section>
+<section id="Processing-data-for-quick-asessment">
+<h2>Processing data for quick asessment<a class="headerlink" href="#Processing-data-for-quick-asessment" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid = GID(file, gid_ScanN_list, PX0=50, PPD=PPD, mythen_gap=mythen_gap, alpha_i_name=&#39;mu&#39;, I0=2e12, saving_dir=SavingDir)
+fig, ax = gid.plot_quick_analysis(save=True)
 </pre></div>
 </div>
 </div>
@@ -227,7 +256,7 @@ gid.plot_quick_analysis(save=True)
 Start loading data.
 Loading scan #25
 Loaded scan #25
-Loading completed. Reading time 0.004 sec
+Loading completed. Reading time 0.003 sec
 Start processing 2D data.
 Processing completed. Processing time 0.001 sec
 
@@ -244,29 +273,18 @@ Saving standard GID plot.
   im = ax0.imshow(np.log10(np.rot90(self.data_gap)), aspect=&#39;equal&#39;, vmin=_vmin, vmax=_vmax,
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(&lt;Figure size 600x600 with 2 Axes&gt;,
- array([&lt;Axes: xlabel=&#39;$q_{xy}, \\AA^{-1}$&#39;, ylabel=&#39;$q_{z}, \\AA^{-1}$&#39;&gt;,
-        &lt;Axes: xlabel=&#39;$q_{xy}, \\AA^{-1}$&#39;, ylabel=&#39;Intensity&#39;&gt;],
-       dtype=object))
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_10_3.png" src="_images/usage_example_10_3.png" />
+<img alt="_images/usage_example_13_2.png" src="_images/usage_example_13_2.png" />
 </div>
 </div>
+</section>
 <section id="Making-q-space-cuts">
 <h2>Making q-space cuts<a class="headerlink" href="#Making-q-space-cuts" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig, [ax0, ax1] = plt.subplots(1,2, figsize=(8,4), layout=&#39;tight&#39;)
@@ -309,13 +327,13 @@ GID cut saved as: /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DP
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_12_2.png" src="_images/usage_example_12_2.png" />
+<img alt="_images/usage_example_15_2.png" src="_images/usage_example_15_2.png" />
 </div>
 </div>
 <section id="Plot-only-2D-graph-to-be-able-to-modifiy-image">
 <h3>Plot only 2D graph to be able to modifiy image<a class="headerlink" href="#Plot-only-2D-graph-to-be-able-to-modifiy-image" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(layout=&#39;tight&#39;)
@@ -326,7 +344,7 @@ ax.set_ylim(0, 1.2)
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -338,14 +356,14 @@ ax.set_ylim(0, 1.2)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_14_1.png" src="_images/usage_example_14_1.png" />
+<img alt="_images/usage_example_17_1.png" src="_images/usage_example_17_1.png" />
 </div>
 </div>
 </section>
 <section id="An-example-of-rebinning-data-to-smooth/reduce-number-of-points">
 <h3>An example of rebinning data to smooth/reduce number of points<a class="headerlink" href="#An-example-of-rebinning-data-to-smooth/reduce-number-of-points" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>qz, qz_cut  = gid.get_qz_cut(1.25, 1.4)
@@ -356,19 +374,19 @@ plt.plot(new_qz, new_qz_cut, &#39;o&#39;, alpha=0.8)
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&lt;matplotlib.lines.Line2D at 0x761723df71d0&gt;]
+[&lt;matplotlib.lines.Line2D at 0x7fb64b4b3ef0&gt;]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_16_1.png" src="_images/usage_example_16_1.png" />
+<img alt="_images/usage_example_19_1.png" src="_images/usage_example_19_1.png" />
 </div>
 </div>
 </section>
@@ -389,7 +407,7 @@ plt.plot(new_qz, new_qz_cut, &#39;o&#39;, alpha=0.8)
 <li><p>Constant</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.analyze_peak(*gid.get_qz_cut(1.25, 1.4), limits=(0.1, 1.2), model=&#39;gaussian&#39;, background=&#39;constant&#39;, filename_prefix=f&#39;qz_fit_result_pi_{gid.Pi}&#39;, save=True)
@@ -407,21 +425,21 @@ Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<h2>Fit Result</h2> <p>Model: (Model(gaussian, prefix='peak_') + Model(constant, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>41</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1099</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 7.9789e-18</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.2867e-21</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-50954.6989</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-50934.6903</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99202106</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.6351e-10</td><td style='text-align:left'> 4.2536e-12</td><td style='text-align:left'>(2.60%)</td><td style='text-align:left'>6.521827259204003e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 0.67541340</td><td style='text-align:left'> 0.00239408</td><td style='text-align:left'>(0.35%)</td><td style='text-align:left'>0.6678458712078683</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.14364533</td><td style='text-align:left'> 0.00316242</td><td style='text-align:left'>(2.20%)</td><td style='text-align:left'>0.21967123158247365</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_c</td><td style='text-align:left'> 4.2462e-10</td><td style='text-align:left'> 4.6408e-12</td><td style='text-align:left'>(1.09%)</td><td style='text-align:left'>2.5602301218488093e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.33825890</td><td style='text-align:left'> 0.00744694</td><td style='text-align:left'>(2.20%)</td><td style='text-align:left'>0.5172862095550407</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>2.3548200*peak_sigma</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 4.5412e-10</td><td style='text-align:left'> 7.3369e-12</td><td style='text-align:left'>(1.62%)</td><td style='text-align:left'>1.1844212590999683e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>0.3989423*peak_amplitude/max(1e-15, peak_sigma)</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.8320</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.7861</td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.6534</td></tr></table></div>
+<h2>Fit Result</h2> <p>Model: (Model(gaussian, prefix='peak_') + Model(constant, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>41</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1090</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 7.9613e-18</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.3308e-21</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-50530.8009</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-50510.8252</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99203870</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.6595e-10</td><td style='text-align:left'> 4.3688e-12</td><td style='text-align:left'>(2.63%)</td><td style='text-align:left'>6.576425245698287e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 0.68104277</td><td style='text-align:left'> 0.00242117</td><td style='text-align:left'>(0.36%)</td><td style='text-align:left'>0.6733772828724593</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.14546615</td><td style='text-align:left'> 0.00322347</td><td style='text-align:left'>(2.22%)</td><td style='text-align:left'>0.22151022646204463</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_c</td><td style='text-align:left'> 4.2322e-10</td><td style='text-align:left'> 4.7364e-12</td><td style='text-align:left'>(1.12%)</td><td style='text-align:left'>2.5602301218488093e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.34254659</td><td style='text-align:left'> 0.00759069</td><td style='text-align:left'>(2.22%)</td><td style='text-align:left'>0.521616711477352</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>2.3548200*peak_sigma</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 4.5513e-10</td><td style='text-align:left'> 7.3746e-12</td><td style='text-align:left'>(1.62%)</td><td style='text-align:left'>1.1844212590999683e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>0.3989423*peak_amplitude/max(1e-15, peak_sigma)</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.8368</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.7898</td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'>bg_c</td><td style='text-align:right'>-0.6602</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_18_2.png" src="_images/usage_example_18_2.png" />
+<img alt="_images/usage_example_21_2.png" src="_images/usage_example_21_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.analyze_peak(*gid.get_qxy_cut(0, 0.25), filename_prefix=f&#39;qxy_fit_result_pi_{gid.Pi}&#39;,model=&#39;voigt&#39;, save=True)
@@ -439,17 +457,17 @@ Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<h2>Fit Result</h2> <p>Model: (Model(voigt, prefix='peak_') + Model(linear, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>73</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>61</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 5.3092e-17</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 9.4807e-19</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2526.70813</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2516.15376</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.96397875</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.1181e-09</td><td style='text-align:left'> 4.0833e-11</td><td style='text-align:left'>(3.65%)</td><td style='text-align:left'>1.3921267485513022e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 1.46732756</td><td style='text-align:left'> 5.2709e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>1.4630889709210735</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.00891700</td><td style='text-align:left'> 4.0213e-04</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'> 4.9982e-09</td><td style='text-align:left'> 6.2989e-10</td><td style='text-align:left'>(12.60%)</td><td style='text-align:left'>5.281351872044777e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_intercept</td><td style='text-align:left'> 5.1777e-10</td><td style='text-align:left'> 9.2271e-10</td><td style='text-align:left'>(178.21%)</td><td style='text-align:left'>-5.179515587578305e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_gamma</td><td style='text-align:left'> 0.00891700</td><td style='text-align:left'> 4.0213e-04</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>peak_sigma</td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.03211272</td><td style='text-align:left'> 0.00144818</td><td style='text-align:left'>(4.51%)</td><td style='text-align:left'>0.026344548858876313</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>1.0692*peak_gamma+sqrt(0.8664*peak_gamma**2+5.545083*peak_sigma**2)</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 2.6170e-08</td><td style='text-align:left'> 8.7017e-10</td><td style='text-align:left'>(3.33%)</td><td style='text-align:left'>3.9718052479715894e-08</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>(peak_amplitude/(max(1e-15, peak_sigma*sqrt(2*pi))))*real(wofz((1j*peak_gamma)/(max(1e-15, peak_sigma*sqrt(2)))))</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'>bg_intercept</td><td style='text-align:right'>-0.9889</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.6867</td></tr></table></div>
+<h2>Fit Result</h2> <p>Model: (Model(voigt, prefix='peak_') + Model(linear, prefix='bg_'))</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>73</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>61</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 5.2260e-17</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 9.3322e-19</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2527.67146</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2517.11709</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.96414970</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:left'>vary</th><th style='text-align:right'>expression</th></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'> 1.1102e-09</td><td style='text-align:left'> 4.0432e-11</td><td style='text-align:left'>(3.64%)</td><td style='text-align:left'>1.3809667954292998e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_center</td><td style='text-align:left'> 1.46738317</td><td style='text-align:left'> 5.2386e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>1.4630889709210735</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_sigma</td><td style='text-align:left'> 0.00888573</td><td style='text-align:left'> 3.9977e-04</td><td style='text-align:left'>(4.50%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'> 0.00000000</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'> 4.9423e-09</td><td style='text-align:left'> 6.2493e-10</td><td style='text-align:left'>(12.64%)</td><td style='text-align:left'>5.24727600309053e-09</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>bg_intercept</td><td style='text-align:left'> 5.3049e-10</td><td style='text-align:left'> 9.1545e-10</td><td style='text-align:left'>(172.57%)</td><td style='text-align:left'>-5.268516365358168e-10</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>True</td><td style='text-align:right'></td></tr><tr><td style='text-align:left'>peak_gamma</td><td style='text-align:left'> 0.00888573</td><td style='text-align:left'> 3.9977e-04</td><td style='text-align:left'>(4.50%)</td><td style='text-align:left'>0.007315307623194406</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>peak_sigma</td></tr><tr><td style='text-align:left'>peak_fwhm</td><td style='text-align:left'> 0.03200010</td><td style='text-align:left'> 0.00143970</td><td style='text-align:left'>(4.50%)</td><td style='text-align:left'>0.026344548858876313</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>1.0692*peak_gamma+sqrt(0.8664*peak_gamma**2+5.545083*peak_sigma**2)</td></tr><tr><td style='text-align:left'>peak_height</td><td style='text-align:left'> 2.6076e-08</td><td style='text-align:left'> 8.6497e-10</td><td style='text-align:left'>(3.32%)</td><td style='text-align:left'>3.939965359525216e-08</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:left'>False</td><td style='text-align:right'>(peak_amplitude/(max(1e-15, peak_sigma*sqrt(2*pi))))*real(wofz((1j*peak_gamma)/(max(1e-15, peak_sigma*sqrt(2)))))</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>bg_slope</td><td style='text-align:left'>bg_intercept</td><td style='text-align:right'>-0.9889</td></tr><tr><td style='text-align:left'>peak_amplitude</td><td style='text-align:left'>peak_sigma</td><td style='text-align:right'>+0.6867</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/usage_example_19_2.png" src="_images/usage_example_19_2.png" />
+<img alt="_images/usage_example_22_2.png" src="_images/usage_example_22_2.png" />
 </div>
 </div>
 </section>
@@ -457,7 +475,7 @@ Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_
 <section id="Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA-and-to-.dat-file">
 <h2>Saving a 2D image to h5 file to be explored with pyMCA and to .dat file<a class="headerlink" href="#Saving-a-2D-image-to-h5-file-to-be-explored-with-pyMCA-and-to-.dat-file" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.save_image_h5()   ## This is a preferred format
@@ -469,11 +487,11 @@ Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2D image saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_0PS/DPPC_0PS_0002//GID_DPPC_0PS_2D.h5
+Scan already processed and saved to h5: Unable to synchronously create group (name already exists)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>gid.save_image_dat()   ## This is not recommended as the resulting file is big and difficult to work with
@@ -510,6 +528,8 @@ Fit parameters saved to /mnt/data/ls3582/id10-surf/20251120/PROCESSED_DATA/DPPC_
 </ul>
 </li>
 <li><a class="reference internal" href="#Grazing-Incidence-Diffraction">Grazing Incidence Diffraction</a><ul>
+<li><a class="reference internal" href="#Calibration-of-Mythen-detector">Calibration of Mythen detector</a></li>
+<li><a class="reference internal" href="#Processing-data-for-quick-asessment">Processing data for quick asessment</a></li>
 <li><a class="reference internal" href="#Making-q-space-cuts">Making q-space cuts</a><ul>
 <li><a class="reference internal" href="#Plot-only-2D-graph-to-be-able-to-modifiy-image">Plot only 2D graph to be able to modifiy image</a></li>
 <li><a class="reference internal" href="#An-example-of-rebinning-data-to-smooth/reduce-number-of-points">An example of rebinning data to smooth/reduce number of points</a></li>
