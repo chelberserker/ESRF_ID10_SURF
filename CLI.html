@@ -47,12 +47,65 @@
 <p>Command Line Interface (CLI) provides a convenient wrapper for batch processing of the XRR and GID data.
 This interface reads a configuration YAML file with a following structure:</p>
 <p>Instrument definition:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="ss">instrument</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;id10-surf&#39;</span>
+</pre></div>
+</div>
 <p>Next, visit definition for traceability and metadata storage in ORSO format:</p>
+<div class="highlight-yml notranslate"><div class="highlight"><pre><span></span>visit:
+  local_contact: &quot;John Doe&quot;
+  user: &#39;Big Prof&#39;
+  user_affiliation: &#39;Harvard&#39;
+  visit id: &#39;sc7777&#39;
+  date: 2025-12-26
+  saving: &#39;default&#39;     # can be either /path/to/the/dir or cwd. default is PROCESSED_DATA if path contains RAW_DATA, cwd otherwise
+</pre></div>
+</div>
 <p>Next, we define an XRR setup by providing reduction parameters:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">setup_xrr</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">PX0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">401</span>
+<span class="w">  </span><span class="nt">PY0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<span class="w">  </span><span class="nt">dPX</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">dPY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">  </span><span class="nt">bckg_gap</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">monitor_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ionch2&#39;</span>
+<span class="w">  </span><span class="nt">alpha_i_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;mu&#39;</span>
+<span class="w">  </span><span class="nt">beam_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">  </span><span class="nt">sample_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">17</span>
+</pre></div>
+</div>
 <p>Similar for GID reduction parameters:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">setup_gid</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">PX0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">  </span><span class="nt">PPD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">198.5</span>
+<span class="w">  </span><span class="nt">mythen_gap</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
+<span class="w">  </span><span class="nt">alpha_i_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;mu&#39;</span>
+<span class="w">  </span><span class="nt">monitor_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ionch2&#39;</span>
+<span class="w">  </span><span class="nt">I0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2e12</span>
+</pre></div>
+</div>
 <p>Next we define files and scans for processing XRR. It is possible to define multiple files</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">xrr</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/data/visitor/ls3582/id10-surf/20251120/RAW_DATA/sample/sample_dataset/sample_dataset.h5&#39;</span>
+<span class="w">    </span><span class="nt">scans</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">zgH</span><span class="p">:</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">,</span><span class="nt"> refl</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8,9&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">zgH</span><span class="p">:</span><span class="w"> </span><span class="nv">14</span><span class="p p-Indicator">,</span><span class="nt"> refl</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15,16&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/data/visitor/ls3582/id10-surf/20251120/RAW_DATA/lipids/lipids_40C/lipids_40C.h5&#39;</span>
+<span class="w">    </span><span class="nt">scans</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">zgH</span><span class="p">:</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">refl = &quot;6</span><span class="p p-Indicator">,</span><span class="nv">7&quot;</span><span class="p p-Indicator">}</span>
+</pre></div>
+</div>
 <p>Similar definition is for GID processing. Note, that several scans on one line will stitch them together and those should not overlap.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">gid</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/data/ls3582/id10-surf/20251120/RAW_DATA/lipids/lipids_20C/lipids_20C.h5&#39;</span>
+<span class="w">    </span><span class="nt">scans</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">11</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19, 20</span>
+</pre></div>
+</div>
 <p>To call CLI simply run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>cli.py<span class="w"> </span>processing_config.yaml
+</pre></div>
+</div>
 </section>
 
 

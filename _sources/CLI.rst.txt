@@ -6,12 +6,14 @@ This interface reads a configuration YAML file with a following structure:
 
 Instrument definition:
 
-.. code-block:: yaml
+.. code-block:: ruby
+
     instrument: 'id10-surf'
 
 Next, visit definition for traceability and metadata storage in ORSO format:
 
 .. code-block:: yml
+
     visit:
       local_contact: "John Doe"
       user: 'Big Prof'
@@ -24,6 +26,7 @@ Next, visit definition for traceability and metadata storage in ORSO format:
 Next, we define an XRR setup by providing reduction parameters:
 
 .. code-block:: yaml
+
     setup_xrr:
       PX0: 401
       PY0: 300
@@ -38,6 +41,7 @@ Next, we define an XRR setup by providing reduction parameters:
 Similar for GID reduction parameters:
 
 .. code-block:: yaml
+
     setup_gid:
       PX0: 50
       PPD: 198.5
@@ -49,6 +53,7 @@ Similar for GID reduction parameters:
 Next we define files and scans for processing XRR. It is possible to define multiple files
 
 .. code-block:: yaml
+
     xrr:
       - file: '/data/visitor/ls3582/id10-surf/20251120/RAW_DATA/sample/sample_dataset/sample_dataset.h5'
         scans:
@@ -61,6 +66,7 @@ Next we define files and scans for processing XRR. It is possible to define mult
 Similar definition is for GID processing. Note, that several scans on one line will stitch them together and those should not overlap.
 
 .. code-block:: yaml
+
     gid:
       - file: '/data/ls3582/id10-surf/20251120/RAW_DATA/lipids/lipids_20C/lipids_20C.h5'
         scans:
@@ -71,4 +77,5 @@ Similar definition is for GID processing. Note, that several scans on one line w
 To call CLI simply run:
 
 .. code-block:: bash
+
     python3 cli.py processing_config.yaml
