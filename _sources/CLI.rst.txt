@@ -11,7 +11,7 @@ Instrument definition:
 
 Next, visit definition for traceability and metadata storage in ORSO format:
 
-.. code-block:: yaml
+.. code-block:: yml
     visit:
       local_contact: "John Doe"
       user: 'Big Prof'
