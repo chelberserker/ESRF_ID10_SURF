@@ -739,5 +739,80 @@ class GID:
         except Exception as e:
             print(f"Error saving GID image as .dat file: {e}")
 
+    @staticmethod
+    def line_step(x, slope, intercept, step_pos, step):
+        line_y = intercept + x * slope
+        step_y = np.zeros(len(x))
+        step_y[np.argwhere(x > step_pos)] = 1 * step
+        line_step = line_y + step_y
+        return line_step
+
+    @staticmethod
+    def line_step_fitting(pars, x, data = None):
+        # unpack parameters: extract .value attribute for each parameter
+        parvals = pars.valuesdict()
+        slope = parvals['slope']
+        intercept = parvals['intercept']
+        step = parvals['step']
+        step_pos = parvals['step_pos']
+
+        line_y = intercept + x * slope
+        step_y = np.zeros(len(x))
+        step_y[np.argwhere(x > step_pos)] = 1 * step
+        model = line_y + step_y
+
+        if data is None:
+            return model
+        return (model - data)
+
+    @staticmethod
+    def calibrate_mythen(filename, scanN, plot=True):
+
+        detector_name = 'mythen2'
+        angle_name = 'gam'
+
+        print('Calibrating Mythen from scan #{}'.format(scanN))
+        try:
+            with h5py.File(filename, "r") as f:
+                # Using [()] to read dataset into numpy array immediately
+                mythen = f.get(f"{scanN}.1/measurement/{detector_name}")[()]
+                angle = f.get(f"{scanN}.1/measurement/{angle_name}")[()]
+
+        except Exception as e:
+            print(f"Error loading scan {scanN}: {e}")
+            raise
+
+        beam_pos = np.argmax(mythen, axis=1)
+        beam_int = np.max(mythen, axis=1)
+        beam_pos = np.ma.masked_array(beam_pos, np.array(beam_int) < 2 * np.mean(mythen))
+
+        gap_cen = (min(angle[~beam_pos.mask]) + max(angle[~beam_pos.mask])) / 2
+
+        fit_params = lmfit.create_params(slope=-170, intercept=10000, step=100, step_pos=gap_cen)
+
+        out = lmfit.minimize(GID.line_step_fitting, fit_params, args=(angle[~beam_pos.mask],),
+                             kws={'data': beam_pos[~beam_pos.mask]})
+
+        if plot:
+            fig, ax = plt.subplots(1,1, figsize = (6,3), layout='tight')
+            ax.plot(angle, beam_pos, 'o', alpha = 0.2)
+            ax.plot(angle, GID.line_step_fitting(out.params, angle))
+
+            ax.set_xlabel('gam, degree')
+            ax.set_ylabel('beam position, px')
+            ax.set_xlim(np.min(angle[~beam_pos.mask]), np.max(angle[~beam_pos.mask]))
+            ax.set_ylim(np.min(beam_pos[~beam_pos.mask]), np.max(beam_pos[~beam_pos.mask]))
+
+            plt.text(34, 500, f"PPD = {-out.params['slope'].value:.2f}, \nmythen_gap = {int(out.params['step'].value)}")
+            plt.show()
+
+        ppd = float(np.round(-out.params['slope'].value, 3))
+        gap = int(out.params['step'].value)
+
+        return ppd, gap
+
+
+
+
 
 
