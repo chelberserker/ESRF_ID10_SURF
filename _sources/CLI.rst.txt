@@ -78,4 +78,10 @@ To call CLI simply run:
 
 .. code-block:: bash
 
+    id10-surf-process processing_CLI.yaml
+
+Alternatively:
+
+.. code-block:: bash
+
     python3 cli.py processing_config.yaml
