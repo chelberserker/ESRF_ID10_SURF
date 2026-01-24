@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esrf_id10_surf"
+keywords = ["X-ray reflectivity", "reflectometry", "ESRF-ID10-SURF", "ESRF ID10", "ESRF", "ID10", "X-ray", "reflectivity", "GID", "XRR", "Grazing Incidence Diffraction", "GISAXS", "GIXS"]
 dynamic = ["version"]
 authors = [
   { name="Egor A. Bersenev", email="egor.bersenev@esrf.fr" },
@@ -22,8 +23,19 @@ dependencies = [
     "h5py",
     "lmfit",
     "scipy",
-    "orsopy"
+    "orsopy",
+    "PyYAML"
 ]
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://chelberserker.github.io/ESRF_ID10_SURF/"
+Documentation = "https://chelberserker.github.io/ESRF_ID10_SURF/"
+Repository = "https://github.com/chelberserker/ESRF_ID10_SURF"
+
+[project.scripts]
+id10-surf-process = "ESRF_ID10_SURF.cli:main"
+
 
 [tool.setuptools]
 package-dir = {"" = "src"}
