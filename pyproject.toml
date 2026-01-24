@@ -26,7 +26,6 @@ dependencies = [
     "orsopy",
     "PyYAML"
 ]
-readme = "README.md"
 
 [project.urls]
 Homepage = "https://chelberserker.github.io/ESRF_ID10_SURF/"
