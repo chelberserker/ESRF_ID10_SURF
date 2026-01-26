@@ -20,6 +20,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
 
+from ..base import BaseSurf
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -116,42 +118,12 @@ def rebin(q_vectors: np.ndarray,
     return cleaned_q, cleaned_R, cleaned_R_e
 
 
-class XRR:
+class XRR(BaseSurf):
     """
     Class for the processing of Surface X-ray Scattering data.
 
     This class handles loading h5 files, region-of-interest based integration
     of 2D detector data, corrections (footprint, transmission), and plotting.
-
-    Attributes:
-        file (str): Path to the HDF5 file containing the data.
-        scans (np.ndarray): Array of scan numbers to process.
-        alpha_i_name (str): Name of the incident angle motor/counter.
-        detector_name (str): Name of the detector data entry.
-        monitor_name (str): Name of the monitor counter.
-        transmission_name (str): Name of the transmission counter.
-        att_name (str): Name of the attenuator positioner.
-        energy_name (str): Name of the energy positioner.
-        cnttime_name (str): Name of the counting time counter.
-        PX0 (int): Direct beam X pixel coordinate on detector.
-        PY0 (int): Direct beam Y pixel coordinate on detector.
-        dPX (int): Half-width of the ROI in X direction.
-        dPY (int): Half-width of the ROI in Y direction.
-        pixel_size_qxz (float): Pixel size in reciprocal space (x/z).
-        pixel_size_qy (float): Pixel size in reciprocal space (y).
-        I0 (float): Incident intensity normalization factor.
-        footprint_correction_applied (bool): Flag if footprint correction was applied.
-        corrected_doubles (bool): Flag if double points were corrected.
-        replaced_transmission (bool): Flag if transmission was manually replaced.
-        is_rebinned (bool): Flag if data has been rebinned.
-        qz (Optional[np.ndarray]): Calculated qz vector.
-        reflectivity (Optional[np.ndarray]): Calculated reflectivity.
-        reflectivity_error (Optional[np.ndarray]): Calculated reflectivity error.
-        Smap2D (List): List of 2D maps.
-        Smap2D_e (List): List of 2D map errors.
-        Qx_map (Optional[np.ndarray]): Qx map for 2D plotting.
-        Qz_map (Optional[np.ndarray]): Qz map for 2D plotting.
-        sample_name (str): Name of the sample.
     """
 
     def __init__(self,
@@ -172,38 +144,15 @@ class XRR:
                  pixel_size_qy: float = 0.055,
                  energy_name: str = 'monoe',
                  I0: float = 1e13,
-                 saving_dir = None):
+                 saving_dir = None,
+                 **kwargs):
         """
         Initialize the XRR processing class.
-
-        Args:
-            file (str): Path to the HDF5 file.
-            scans (Union[List[int], np.ndarray]): List of scan numbers.
-            alpha_i_name (str, optional): Motor name for incident angle. Defaults to 'chi'.
-            detector_name (str, optional): Detector dataset name. Defaults to 'mpx_cdte_22_eh1'.
-            monitor_name (str, optional): Monitor counter name. Defaults to 'mon'.
-            transmission_name (str, optional): Transmission counter name. Defaults to 'autof_eh1_transm'.
-            att_name (str, optional): Attenuator name. Defaults to 'autof_eh1_curratt'.
-            cnttime_name (str, optional): Count time name. Defaults to 'sec'.
-            PX0 (int, optional): Direct beam X pixel. Defaults to 404.
-            PY0 (int, optional): Direct beam Y pixel. Defaults to 165.
-            dPX (int, optional): ROI half-width X. Defaults to 5.
-            dPY (int, optional): ROI half-width Y. Defaults to 5.
-            bckg_gap (int, optional): Gap between signal and backgroung ROIs in pixels. Defaults to 1.
-            pixel_size_qxz (float, optional): Pixel size factor. Defaults to 0.055.
-            pixel_size_qy (float, optional): Pixel size factor. Defaults to 0.055.
-            energy_name (str, optional): Energy motor name. Defaults to 'monoe'.
-            I0 (float, optional): Intensity normalization. Defaults to 1e13.
         """
-        self.file = file
-        self.scans = np.array(scans)
-        self.alpha_i_name = alpha_i_name
-        self.detector_name = detector_name
-        self.monitor_name = monitor_name
-        self.transmission_name = transmission_name
-        self.att_name = att_name
-        self.energy_name = energy_name
-        self.cnttime_name = cnttime_name
+        super().__init__(file, scans, alpha_i_name=alpha_i_name, detector_name=detector_name,
+                         monitor_name=monitor_name, transmission_name=transmission_name,
+                         att_name=att_name, cnttime_name=cnttime_name, energy_name=energy_name,
+                         I0=I0, saving_dir=saving_dir, **kwargs)
 
         self.footprint_correction_applied = False
         self.corrected_doubles = False
@@ -217,8 +166,6 @@ class XRR:
         self.dPY = dPY
         self.bckg_gap = bckg_gap
 
-        self.I0 = I0
-
         self.pixel_size_qy = pixel_size_qy
         self.pixel_size_qxz = pixel_size_qxz
 
@@ -229,39 +176,31 @@ class XRR:
         self.Qz_map = None
         self.Smap2D = []
         self.Smap2D_e = []
-        self.sample_name = ""
-        self.Pi = 100
-        self.saving_dir = saving_dir
 
-        # Initialize data attributes to avoid attribute error if accessed before loading
-        self.data = None
-        self.alpha_i = None
-        self.monitor = None
-        self.transmission = None
-        self.attenuator = None
-        self.cnttime = None
-        self.energy = None
         self.bckg = None
         self.raw_counts = None
 
-        self.__load_data__()
+        # Add XRR specific appendable keys
+        self.appendable_keys.extend(['data', 'alpha_i', 'energy'])
+
+        self.load_data()
         self.__process_2D_data__()
         self._check_saving_dir()
 
-    def __load_single_scan__(self, scan_n: str) -> Dict[str, Any]:
+    def _load_single_scan(self, scan_n: str) -> Dict[str, Any]:
         """
         Load data for a single scan.
-
-        Args:
-            scan_n (str): Scan number as a string.
-
-        Returns:
-            Dict[str, Any]: Dictionary containing loaded data components.
         """
-        #logger.info('Loading scan #%s', scan_n)
+        logger.info('Loading scan #%s', scan_n)
         with h5py.File(self.file, "r") as f:
             base_path = f"{scan_n}.1"
             meas_path = f"{base_path}/measurement/"
+
+            # Check where energy is
+            try:
+                energy = np.array(f.get(f"{base_path}/instrument/positioners/{self.energy_name}"))
+            except Exception:
+                energy = np.array(f.get(f"{meas_path}/{self.energy_name}"))
 
             data_dict = {
                 'data': np.array(f.get(f"{meas_path}{self.detector_name}")),
@@ -270,7 +209,7 @@ class XRR:
                 'transmission': np.array(f.get(f"{meas_path}{self.transmission_name}")),
                 'attenuator': np.array(f.get(f"{meas_path}{self.att_name}")),
                 'cnttime': np.array(f.get(f"{meas_path}{self.cnttime_name}")),
-                'energy': np.array(f.get(f"{base_path}/instrument/positioners/{self.energy_name}")),
+                'energy': energy,
                 'sample_name': str(f.get(f"{base_path}/sample/name/")[()])[2:-1:1],
                 'Pi': np.mean(f.get(f"{meas_path}{'fb_Pi'}")),
             }
@@ -278,52 +217,9 @@ class XRR:
         logger.info('Loaded scan #%s', scan_n)
         return data_dict
 
-    def __load_data__(self, skip_points: int = 1):
-        """
-        Load data from all scans and concatenate them.
-
-        Args:
-            skip_points (int, optional): Number of initial points to skip for subsequent scans.
-                Defaults to 1.
-        """
-        t0 = time.time()
-        #logger.info("Start loading data.")
-
-        first_scan_n = str(self.scans[0])
-        first_scan_data = self.__load_single_scan__(first_scan_n)
-
-        self.data = first_scan_data['data']
-        self.alpha_i = first_scan_data['alpha_i']
-        self.monitor = first_scan_data['monitor']
-        self.transmission = first_scan_data['transmission']
-        self.attenuator = first_scan_data['attenuator']
-        self.cnttime = first_scan_data['cnttime']
-        self.energy = first_scan_data['energy']
-        self.sample_name = first_scan_data['sample_name']
-        self.Pi = first_scan_data['Pi']
-
-        if len(self.scans) > 1:
-            for scan_num in self.scans[1:]:
-                scan_n = str(scan_num)
-                scan_data = self.__load_single_scan__(scan_n)
-
-                # Append with skipping points
-                self.data = np.append(self.data, scan_data['data'][skip_points:], axis=0)
-                self.alpha_i = np.append(self.alpha_i, scan_data['alpha_i'][skip_points:])
-                self.monitor = np.append(self.monitor, scan_data['monitor'][skip_points:])
-                self.transmission = np.append(self.transmission, scan_data['transmission'][skip_points:])
-                self.attenuator = np.append(self.attenuator, scan_data['attenuator'][skip_points:])
-                self.cnttime = np.append(self.cnttime, scan_data['cnttime'][skip_points:])
-                self.energy = np.append(self.energy, scan_data['energy'])
-
-        #logger.info("Loading completed. Reading time %3.3f sec", time.time() - t0)
-
     def __process_2D_data__(self):
         """
         Process the 2D detector data to calculate reflectivity.
-
-        Performs ROI integration for signal and background, calculates qz,
-        and normalizes by monitor and transmission.
         """
         t0 = time.time()
         #logger.info('Starting 2D data processing.')
@@ -465,7 +361,7 @@ class XRR:
         """
         Reload and reprocess the data, resetting corrections.
         """
-        self.__load_data__()
+        self.load_data()
         self.__process_2D_data__()
         self.footprint_correction_applied = False
         self.corrected_doubles = False
@@ -507,14 +403,6 @@ class XRR:
     def plot_Qmap(self, save: bool = False, fig: Optional[plt.Figure] = None, axes: Optional[plt.Axes] = None) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plot the Q-space map.
-
-        Args:
-            save (bool, optional): Whether to save the plot. Defaults to False.
-            fig (Optional[plt.Figure], optional): Matplotlib figure object. Defaults to None.
-            axes (Optional[plt.Axes], optional): Matplotlib axes object. Defaults to None.
-
-        Returns:
-            Tuple[plt.Figure, plt.Axes]: The figure and axes objects.
         """
         if axes is None:
             fig, (ax0) = plt.subplots(nrows=1, ncols=1, figsize=(6, 6), layout='tight')
@@ -537,9 +425,25 @@ class XRR:
         ax0.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
         if save:
             logger.info('Saving Q-space map.')
-            plt.savefig('Qmap_{}_scan_{}.png'.format(self.sample_name, self.scans), dpi=300)
+            self._save_figure(plt.gcf(), 'Qmap')
 
         return fig, ax0
+
+    def _save_figure(self, fig, suffix, dpi=200):
+        """
+        Helper method to save a matplotlib figure.
+        """
+        self._ensure_sample_dir()
+
+        if self.Pi<80:
+            filename = self.saving_dir + '/{}_XRR_scan_{}_Pi_{:.0f}_{}.png'.format(
+                self.sample_name, self.scans, self.Pi, suffix)
+        else:
+            filename = self.saving_dir + '/{}_XRR_scan_{}_{}.png'.format(
+                self.sample_name, self.scans, suffix)
+
+        fig.savefig(filename, dpi=dpi)
+        logger.info('Plot saved to {}.'.format(filename))
 
     def save_Qmap(self, log_scale=False):
         """
@@ -573,8 +477,6 @@ class XRR:
 
         logger.info('Q-space map in text saved to: %s', filename)
 
-
-
     def get_reflectivity(self) -> np.ndarray:
         """
         Get the reflectivity data sorted by qz.
@@ -592,13 +494,6 @@ class XRR:
     def plot_reflectivity(self, save: bool = False, ax: Optional[plt.Axes] = None, **kwargs) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plot the reflectivity curve.
-
-        Args:
-            save (bool, optional): Whether to save the plot. Defaults to False.
-            ax (Optional[plt.Axes], optional): Matplotlib axes object. Defaults to None.
-
-        Returns:
-            Tuple[plt.Figure, plt.Axes]: The figure and axes objects.
         """
         if ax is None:
             fig = plt.figure(figsize=(6, 6), layout='tight')
@@ -624,13 +519,6 @@ class XRR:
     def plot_reflectivity_qz4(self, save: bool = False, ax: Optional[plt.Axes] = None, **kwargs) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plot reflectivity multiplied by qz^4 (Porod plot).
-
-        Args:
-            save (bool, optional): Whether to save the plot. Defaults to False.
-            ax (Optional[plt.Axes], optional): Matplotlib axes object. Defaults to None.
-
-        Returns:
-            Tuple[plt.Figure, plt.Axes]: The figure and axes objects.
         """
         if ax is None:
             fig = plt.figure(figsize=(6, 6), layout='tight')
@@ -653,12 +541,6 @@ class XRR:
     def save_reflectivity(self, format: str = 'dat', owner: str = 'ESRF', creator: str = 'opid10', zgh_scans: Optional[List[int]] = None):
         """
         Save the reflectivity data to a text file.
-
-        Args:
-            format (str, optional): Format of the saved file. Options are 'dat' and 'orso'. Defaults to 'dat'.
-            owner (str, optional): Owner of the data. Defaults to 'ESRF'.
-            creator (str, optional): Creator of the reduced file. Defaults to 'opid10'.
-            zgh_scans (Optional[List[int]], optional): List of zgH scan numbers. Defaults to None.
         """
         self._ensure_sample_dir()
 
@@ -700,12 +582,10 @@ class XRR:
                 scan_n = str(self.scans[0])
                 base_path = f"{scan_n}.1"
                 start_time_str = f[base_path].attrs.get('start_time') or f[f"{base_path}/start_time"][()].decode('utf-8')
-                # Parse date string, e.g., '2023-10-27T10:00:00' or similar
-                # ESRF format can vary, often it is isoformat-like
+                # Parse date string
                 try:
                     start_date = datetime.fromisoformat(str(start_time_str))
                 except ValueError:
-                     # Fallback for other formats if needed, or just use now
                      start_date = datetime.now()
         except Exception:
             start_date = datetime.now()
@@ -782,11 +662,6 @@ class XRR:
     def show_detector_image(self, frame_number: int = 50, ax: Optional[plt.Axes] = None, plot_cross: bool = True):
         """
         Show a single frame of the detector image with ROI and background regions.
-
-        Args:
-            frame_number (int, optional): Frame number to display. Defaults to 50.
-            ax (Optional[plt.Axes], optional): Matplotlib axes object. Defaults to None.
-            plot_cross (bool, optional): Whether to plot crosshairs at beam center. Defaults to True.
         """
         if ax is None:
             fig = plt.figure(figsize=(6, 6), layout='tight')
@@ -818,9 +693,6 @@ class XRR:
     def replace_transmission(self, filter_transmission: Dict[Any, float]):
         """
         Replace transmission values using a dictionary of filter transmissions.
-
-        Args:
-            filter_transmission (Dict[Any, float]): Mapping of attenuator position to transmission.
         """
         _new_transmission = np.array([])
         for point in self.attenuator:
@@ -846,12 +718,6 @@ class XRR:
     def _find_double_(x: np.ndarray) -> Dict[float, np.ndarray]:
         """
         Find indices of repeated values in an array.
-
-        Args:
-            x (np.ndarray): Input array.
-
-        Returns:
-            Dict[float, np.ndarray]: Dictionary mapping values to their indices.
         """
         u, c = np.unique(x, return_counts=True)
         values_of_interest = u[c > 1]
@@ -862,9 +728,6 @@ class XRR:
     def calculate_corrected_transmission(self) -> Dict[Any, float]:
         """
         Calculate corrected transmission based on overlapping points (doubles).
-
-        Returns:
-            Dict[Any, float]: Dictionary of corrected transmissions.
         """
         _new_transmission_dict = dict(zip(self.attenuator, self.transmission))
         if self.replaced_transmission:
@@ -875,13 +738,8 @@ class XRR:
             coeff = []
 
             # This logic assumes the array is sorted by angle/qz in general but contains overlaps
-            # It calculates ratio between the last point of the first segment and first point of second segment
-            # for a given Q value.
-            # Note: i is the key (qz value), sorted_double_x[i] are indices
             for i in sorted_double_x:
                 indices = sorted_double_x[i]
-                # Assuming indices are ordered like [idx1, idx2], where idx1 is from higher intensity (lower attenuation) usually?
-                # The original code used [-2] and [-1].
                 if len(indices) >= 2:
                      coeff.append(self.reflectivity[indices[-2]] / self.reflectivity[indices[-1]])
                 else:
@@ -891,8 +749,6 @@ class XRR:
 
             _new_transm = copy.copy(self.transmission)
             for i in coeff_dict:
-                # Apply correction to all points before the overlap
-                # This assumes scan direction and that overlaps are sequential adjustments
                 idx_limit = coeff_dict[i]['indexes'][1]
                 _new_transm[0:idx_limit] = _new_transm[0:idx_limit] * coeff_dict[i]['coeff']
 
@@ -915,10 +771,6 @@ class XRR:
     def do_rebin(self, *args, **kwargs):
         """
         Rebin the reflectivity data.
-
-        Args:
-            *args: Arguments passed to rebin function.
-            **kwargs: Keyword arguments passed to rebin function.
         """
         new_qz, new_R, new_R_err = rebin(*self.get_reflectivity(), **kwargs)
         self.qz = new_qz
@@ -930,13 +782,6 @@ class XRR:
     def find_i0_from_z_scan(z: np.ndarray, I: np.ndarray) -> Tuple[float, int]:
         """
         Find I0 (direct beam intensity) from a Z-scan.
-
-        Args:
-            z (np.ndarray): Z positions.
-            I (np.ndarray): Intensity.
-
-        Returns:
-            Tuple[float, int]: I0 value and index of maximum intensity.
         """
         n_max = np.argmax(I)
         I_cutoff = np.mean(I[:n_max]) - np.sqrt(np.mean(I[:n_max]))
@@ -950,12 +795,6 @@ class XRR:
     def find_i0(self, to_print: bool = True) -> Tuple[float, Any, float]:
         """
         Find I0, attenuator and transmission at the direct beam.
-
-        Args:
-            to_print (bool, optional): Whether to print details. Defaults to True.
-
-        Returns:
-            Tuple[float, Any, float]: I0, attenuator value, transmission value.
         """
         if to_print:
             logger.info('Processing scan of motor %s.', self.alpha_i_name)
@@ -980,7 +819,6 @@ class XRR:
                     # Find indices where attenuator matches
                     indices = np.where(self.attenuator == atten)
                     # Use the transmission of the first matching point for adjustment
-                    # This logic seems specific to the beamline workflow
                     current_transmission = self.transmission[indices][0]
                     I0 = calc_I0 * transmission / current_transmission
                     self.I0 = I0
@@ -992,9 +830,6 @@ class XRR:
     def assert_i0(self, zgH_scan: 'XRR'):
         """
         Assert I0 from a zgH scan (direct beam scan).
-
-        Args:
-            zgH_scan (XRR): Another XRR object representing the direct beam scan.
         """
         if self.alpha_i_name.lower() == 'zgh':
             logger.warning('You are trying to replace I0 in zgH scan. Load reflectivity data.')
@@ -1015,43 +850,3 @@ class XRR:
             else:
                 logger.warning('Attenuator %s not found in the scan of motor %s.\nCheck inputs.',
                                atten, self.alpha_i)
-
-
-    def _check_saving_dir(self):
-        """
-        Check if the saving directory is set; if not, set a default based on the current working directory and sample name.
-        """
-        if self.saving_dir:
-            pass
-        else:
-            self.saving_dir = os.getcwd() + f"/{self.sample_name}"
-
-
-    def _ensure_sample_dir(self):
-        """
-        Ensure the saving directory exists, creating it if necessary.
-        """
-        try:
-            os.makedirs(self.saving_dir, exist_ok=True)
-        except OSError as e:
-            print('Saving directory is impossible: ', e)
-
-    def _save_figure(self, fig, suffix):
-        """
-        Helper method to save a matplotlib figure.
-
-        Args:
-            fig (matplotlib.figure.Figure): The figure object to save.
-            suffix (str): Suffix to append to the filename.
-        """
-        self._ensure_sample_dir()
-
-        if self.Pi<80:
-            filename = self.saving_dir + '/{}_XRR_scan_{}_Pi_{:.0f}_{}.png'.format(
-                self.sample_name, self.scans, self.Pi, suffix)
-        else:
-            filename = self.saving_dir + '/{}_XRR_scan_{}_{}.png'.format(
-                self.sample_name, self.scans, suffix)
-
-        fig.savefig(filename, dpi=200)
-        logger.info('Plot saved to {}.'.format(filename))
