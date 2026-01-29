@@ -119,35 +119,37 @@
     <span class="n">binned_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">new_q</span><span class="p">)</span>
     <span class="n">binned_R_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">new_q</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_q</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">inverse_var</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">new_q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">q</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">new_q</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
-                <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-                <span class="n">inverse_var</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">R_e</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="c1"># Use vectorized operations instead of nested loops</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">weighted_R</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">weights</span>
+    <span class="n">weighted_q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">weights</span>
 
-        <span class="c1"># Don&#39;t bother doing maths if there were no recorded q-values between</span>
-        <span class="c1"># the two bin points we were looking at.</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">continue</span>
+    <span class="c1"># np.digitize returns indices such that bins[i-1] &lt;= x &lt; bins[i]</span>
+    <span class="c1"># new_q are the bin edges.</span>
+    <span class="c1"># We want q in [new_q[i], new_q[i+1]) to fall into bin i.</span>
+    <span class="c1"># digitize returns i+1 for this range.</span>
+    <span class="n">bin_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">new_q</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-        <span class="c1"># We will be using inverse-variance weighting to minimize the variance</span>
-        <span class="c1"># of the weighted mean.</span>
-        <span class="n">sum_of_inverse_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">inverse_var</span><span class="p">)</span>
+    <span class="c1"># Filter out indices that are out of bounds</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_indices</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">bin_indices</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_q</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># If we measured multiple qs between these bin locations, then average</span>
-        <span class="c1"># the data, weighting by inverse variance.</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
-            <span class="n">binned_R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_e</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">binned_q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">q</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_e</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">valid_indices</span> <span class="o">=</span> <span class="n">bin_indices</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+    <span class="n">valid_weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+    <span class="n">valid_weighted_R</span> <span class="o">=</span> <span class="n">weighted_R</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+    <span class="n">valid_weighted_q</span> <span class="o">=</span> <span class="n">weighted_q</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
 
-        <span class="c1"># Divide by the sum of the weights.</span>
-        <span class="n">binned_R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">sum_of_inverse_var</span>
-        <span class="n">binned_q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">sum_of_inverse_var</span>
+    <span class="c1"># Use bincount to sum up weights and weighted values for each bin</span>
+    <span class="n">sum_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">valid_weights</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_q</span><span class="p">))</span>
+    <span class="n">sum_wR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">valid_weighted_R</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_q</span><span class="p">))</span>
+    <span class="n">sum_wq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">valid_weighted_q</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_q</span><span class="p">))</span>
 
-        <span class="c1"># The stddev of an inverse variance weighted mean is always:</span>
-        <span class="n">binned_R_e</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sum_of_inverse_var</span><span class="p">)</span>
+    <span class="c1"># Avoid division by zero</span>
+    <span class="n">nonzero_mask</span> <span class="o">=</span> <span class="n">sum_weights</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="c1"># Calculate weighted averages</span>
+    <span class="n">binned_R</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_wR</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_weights</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+    <span class="n">binned_q</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_wq</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_weights</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+    <span class="n">binned_R_e</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">sum_weights</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">])</span>
 
     <span class="c1"># Get rid of any empty, unused elements of the array.</span>
     <span class="n">cleaned_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">binned_q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">binned_R</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
