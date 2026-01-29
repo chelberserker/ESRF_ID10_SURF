@@ -411,7 +411,7 @@
 
             <span class="c1"># Calculate fallback: Is_cut_err / Is_cut</span>
             <span class="c1"># Use np.divide to handle div by zero in fallback gracefully</span>
-            <span class="n">fallback</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">Is_cut_err</span><span class="p">,</span> <span class="n">Is_cut</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">Is_cut</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Is_cut</span><span class="p">))</span>
+            <span class="n">fallback</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">Is_cut_err</span><span class="p">,</span> <span class="n">Is_cut</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">Is_cut</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
 
             <span class="c1"># Apply fallback</span>
             <span class="n">I_err</span><span class="p">[</span><span class="n">mask_invalid</span><span class="p">]</span> <span class="o">=</span> <span class="n">fallback</span><span class="p">[</span><span class="n">mask_invalid</span><span class="p">]</span>
