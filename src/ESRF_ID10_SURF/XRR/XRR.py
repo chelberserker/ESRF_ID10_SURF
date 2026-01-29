@@ -78,35 +78,37 @@ def rebin(q_vectors: np.ndarray,
     binned_R = np.zeros_like(new_q)
     binned_R_e = np.zeros_like(new_q)
 
-    for i in range(len(new_q) - 1):
-        indices = []
-        inverse_var = []
-        for j in range(len(q)):
-            if new_q[i] <= q[j] < new_q[i + 1]:
-                indices.append(j)
-                inverse_var.append(1 / float(R_e[j] ** 2))
+    # Use vectorized operations instead of nested loops
+    weights = 1.0 / (R_e ** 2)
+    weighted_R = R * weights
+    weighted_q = q * weights
 
-        # Don't bother doing maths if there were no recorded q-values between
-        # the two bin points we were looking at.
-        if len(indices) == 0:
-            continue
+    # np.digitize returns indices such that bins[i-1] <= x < bins[i]
+    # new_q are the bin edges.
+    # We want q in [new_q[i], new_q[i+1]) to fall into bin i.
+    # digitize returns i+1 for this range.
+    bin_indices = np.digitize(q, new_q) - 1
 
-        # We will be using inverse-variance weighting to minimize the variance
-        # of the weighted mean.
-        sum_of_inverse_var = np.sum(inverse_var)
+    # Filter out indices that are out of bounds
+    valid_mask = (bin_indices >= 0) & (bin_indices < len(new_q) - 1)
 
-        # If we measured multiple qs between these bin locations, then average
-        # the data, weighting by inverse variance.
-        for j in indices:
-            binned_R[i] += R[j] / (R_e[j] ** 2)
-            binned_q[i] += q[j] / (R_e[j] ** 2)
+    valid_indices = bin_indices[valid_mask]
+    valid_weights = weights[valid_mask]
+    valid_weighted_R = weighted_R[valid_mask]
+    valid_weighted_q = weighted_q[valid_mask]
 
-        # Divide by the sum of the weights.
-        binned_R[i] /= sum_of_inverse_var
-        binned_q[i] /= sum_of_inverse_var
+    # Use bincount to sum up weights and weighted values for each bin
+    sum_weights = np.bincount(valid_indices, weights=valid_weights, minlength=len(new_q))
+    sum_wR = np.bincount(valid_indices, weights=valid_weighted_R, minlength=len(new_q))
+    sum_wq = np.bincount(valid_indices, weights=valid_weighted_q, minlength=len(new_q))
 
-        # The stddev of an inverse variance weighted mean is always:
-        binned_R_e[i] = np.sqrt(1 / sum_of_inverse_var)
+    # Avoid division by zero
+    nonzero_mask = sum_weights > 0
+
+    # Calculate weighted averages
+    binned_R[nonzero_mask] = sum_wR[nonzero_mask] / sum_weights[nonzero_mask]
+    binned_q[nonzero_mask] = sum_wq[nonzero_mask] / sum_weights[nonzero_mask]
+    binned_R_e[nonzero_mask] = np.sqrt(1.0 / sum_weights[nonzero_mask])
 
     # Get rid of any empty, unused elements of the array.
     cleaned_q = np.delete(binned_q, np.argwhere(binned_R == 0))
