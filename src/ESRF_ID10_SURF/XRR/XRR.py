@@ -338,18 +338,6 @@ class XRR:
         except Exception:
             pass
 
-        Qzcut = np.ones(nxc)
-        Qzcut_bckg1 = np.ones(nxc)
-        Qzcut_bckg2 = np.ones(nxc)
-        self.Smap2D = []
-        self.Smap2D_e = []
-
-        Is_cut = np.zeros(nic)  # array for signal
-        Ib_cut = np.zeros(nic)  # array for background
-        Is_cut_err = np.zeros(nic)
-        Ib_cut_err = np.zeros(nic)
-        I_err = np.zeros(nic)
-
         # Pre-calculate slice indices for performance and readability
         roi_y_slice = slice(self.PY0 - self.dPY, self.PY0 + self.dPY)
         roi_x_slice = slice(self.PX0 - self.dPX, self.PX0 + self.dPX)
@@ -357,42 +345,54 @@ class XRR:
         bkg_low_y_slice = slice(self.PY0 + 2 * self.dPY + self.bckg_gap - self.dPY, self.PY0 + 2 * self.dPY + self.bckg_gap  + self.dPY)
         bkg_high_y_slice = slice(self.PY0 - 2 * self.dPY - self.bckg_gap  - self.dPY, self.PY0 - 2 * self.dPY - self.bckg_gap  + self.dPY)
 
-        for i in range(nic):
-            # Lower square background
-            IqxyBL = np.sum(self.data[i, bkg_low_y_slice, roi_x_slice])
-            # Higher square background
-            IqxyBH = np.sum(self.data[i, bkg_high_y_slice, roi_x_slice])
-            # Signal
-            IqxyS = np.sum(self.data[i, roi_y_slice, roi_x_slice])
+        # Vectorized Signal and Background calculation
+        # Summing over Y (axis 1) and X (axis 2) for each image
+        # self.data has shape (nic, nxc, nyc) where nxc is Y and nyc is X based on logic
+        IqxyBL_all = np.sum(self.data[:, bkg_low_y_slice, roi_x_slice], axis=(1, 2))
+        IqxyBH_all = np.sum(self.data[:, bkg_high_y_slice, roi_x_slice], axis=(1, 2))
+        IqxyS_all = np.sum(self.data[:, roi_y_slice, roi_x_slice], axis=(1, 2))
 
-            if i < len(self.alpha_i):
-                # Qz cuts (sum along X axis for the ROI Y range)
-                Qzcut[:] = np.sum(self.data[i, roi_y_slice, :], axis=0)
-                Qzcut_bckg1[:] = np.sum(self.data[i, bkg_low_y_slice, :], axis=0)
-                Qzcut_bckg2[:] = np.sum(self.data[i, bkg_high_y_slice, :], axis=0)
+        Ib_cut = (IqxyBL_all + IqxyBH_all) / 2
+        Is_cut = IqxyS_all
+        Is_cut_err = np.sqrt(Is_cut)
+        Ib_cut_err = np.sqrt(Ib_cut)
 
-                norm_factor = self.transmission[i] * self.monitor[i] / self.monitor[0]
+        # Vectorized Error calculation
+        with np.errstate(divide='ignore', invalid='ignore'):
+            numerator = np.sqrt(Is_cut_err**2 + Ib_cut_err**2)
+            denominator = Is_cut - Ib_cut
+            I_err = numerator / denominator
 
-                self.Smap2D.append(
-                    (Qzcut[:] - (Qzcut_bckg1[:] + Qzcut_bckg2) / 2) / norm_factor
-                )
-                self.Smap2D_e.append(
-                    ((np.sqrt(np.abs(Qzcut[:])) + np.sqrt((Qzcut_bckg1[:] + Qzcut_bckg2[:]) / 2)) / norm_factor)
-                )
+            # Identify invalid entries (inf or nan)
+            mask_invalid = ~np.isfinite(I_err)
 
-            Ib_cut[i] = (IqxyBL + IqxyBH) / 2  # subtract true background
-            Is_cut[i] = IqxyS
-            Is_cut_err[i] = np.sqrt(Is_cut[i])
-            Ib_cut_err[i] = np.sqrt(Ib_cut[i])
+            # Calculate fallback: Is_cut_err / Is_cut
+            # Use np.divide to handle div by zero in fallback gracefully
+            fallback = np.divide(Is_cut_err, Is_cut, where=(Is_cut > 0), out=np.zeros_like(Is_cut))
 
-            try:
-                # Avoid division by zero
-                with np.errstate(divide='ignore', invalid='ignore'):
-                    I_err[i] = np.sqrt(Is_cut_err[i]**2 + Ib_cut_err[i]**2)/(Is_cut[i] - Ib_cut[i])
-                    if not np.isfinite(I_err[i]):
-                        I_err[i] = Is_cut_err[i] / (Is_cut[i]) if Is_cut[i] > 0 else 0
-            except Exception:
-                 I_err[i] = Is_cut_err[i] / (Is_cut[i])  if Is_cut[i] > 0 else 0
+            # Apply fallback
+            I_err[mask_invalid] = fallback[mask_invalid]
+
+        # Smap2D processing
+        limit_map = min(nic, len(self.alpha_i))
+        if limit_map > 0:
+            # Slicing data up to limit_map
+            data_slice = self.data[:limit_map]
+
+            # Sum along axis 1 (Y axis) to get profile along X
+            Qzcut_all = np.sum(data_slice[:, roi_y_slice, :], axis=1)
+            Qzcut_bckg1_all = np.sum(data_slice[:, bkg_low_y_slice, :], axis=1)
+            Qzcut_bckg2_all = np.sum(data_slice[:, bkg_high_y_slice, :], axis=1)
+
+            norm_factor = self.transmission[:limit_map] * self.monitor[:limit_map] / self.monitor[0]
+            # Reshape for broadcasting: (N, 1)
+            norm_factor = norm_factor[:, np.newaxis]
+
+            self.Smap2D = (Qzcut_all - (Qzcut_bckg1_all + Qzcut_bckg2_all) / 2) / norm_factor
+            self.Smap2D_e = ((np.sqrt(np.abs(Qzcut_all)) + np.sqrt((Qzcut_bckg1_all + Qzcut_bckg2_all) / 2)) / norm_factor)
+        else:
+            self.Smap2D = []
+            self.Smap2D_e = []
 
         logger.info('Number of points in the scan %6d', len(self.alpha_i))
 
