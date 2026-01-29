@@ -368,7 +368,7 @@ class XRR:
 
             # Calculate fallback: Is_cut_err / Is_cut
             # Use np.divide to handle div by zero in fallback gracefully
-            fallback = np.divide(Is_cut_err, Is_cut, where=(Is_cut > 0), out=np.zeros_like(Is_cut))
+            fallback = np.divide(Is_cut_err, Is_cut, where=(Is_cut > 0))
 
             # Apply fallback
             I_err[mask_invalid] = fallback[mask_invalid]
