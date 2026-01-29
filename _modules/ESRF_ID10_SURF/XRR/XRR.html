@@ -75,7 +75,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rebin the data on a linear or logarithmic q-scale.</span>
 
-<span class="sd">    This rebinning procedure is taken from islatu by Andrew R. McCluskey:</span>
+<span class="sd">    This rebinning procedure is based on one from islatu by Andrew R. McCluskey:</span>
 <span class="sd">    https://github.com/DiamondLightSource/islatu</span>
 
 <span class="sd">    Args:</span>
@@ -482,15 +482,11 @@
             <span class="n">samplesize_microns</span> <span class="o">=</span> <span class="n">sample_size</span> <span class="o">*</span> <span class="mi">10000</span>  <span class="c1"># converting cm to microns</span>
 
             <span class="c1"># Avoid division by zero by using a small epsilon or handling alpha_i == 0</span>
-            <span class="n">footprint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                <span class="mf">0.5</span> <span class="o">*</span> <span class="n">beam_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span> <span class="k">if</span> <span class="n">alpha</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">beam_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_i</span>
-            <span class="p">])</span>
+            <span class="n">alpha_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_i</span><span class="p">)</span>
+            <span class="n">effective_alpha_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha_rad</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">))</span>
+            <span class="n">footprint</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">beam_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">effective_alpha_rad</span><span class="p">)</span>
 
-            <span class="n">beam_fraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">samplesize_microns</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ftp</span><span class="p">)</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">samplesize_microns</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ftp</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">ftp</span> <span class="ow">in</span> <span class="n">footprint</span>
-            <span class="p">])</span>
+            <span class="n">beam_fraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">samplesize_microns</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">footprint</span><span class="p">)</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">samplesize_microns</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">footprint</span><span class="p">))</span>
 
             <span class="n">Icor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflectivity</span> <span class="o">/</span> <span class="n">beam_fraction</span>
 
