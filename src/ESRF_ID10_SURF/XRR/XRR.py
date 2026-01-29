@@ -34,7 +34,7 @@ def rebin(q_vectors: np.ndarray,
     """
     Rebin the data on a linear or logarithmic q-scale.
 
-    This rebinning procedure is taken from islatu by Andrew R. McCluskey:
+    This rebinning procedure is based on one from islatu by Andrew R. McCluskey:
     https://github.com/DiamondLightSource/islatu
 
     Args:
@@ -435,15 +435,11 @@ class XRR:
             samplesize_microns = sample_size * 10000  # converting cm to microns
 
             # Avoid division by zero by using a small epsilon or handling alpha_i == 0
-            footprint = np.array([
-                0.5 * beam_size / np.sin(np.deg2rad(alpha)) if alpha != 0 else 0.5 * beam_size / np.sin(np.deg2rad(1e-3))
-                for alpha in self.alpha_i
-            ])
+            alpha_rad = np.deg2rad(self.alpha_i)
+            effective_alpha_rad = np.where(self.alpha_i != 0, alpha_rad, np.deg2rad(1e-3))
+            footprint = 0.5 * beam_size / np.sin(effective_alpha_rad)
 
-            beam_fraction = np.array([
-                (stats.norm.cdf(samplesize_microns / 2, 0, ftp) - stats.norm.cdf(-samplesize_microns / 2, 0, ftp))
-                for ftp in footprint
-            ])
+            beam_fraction = (stats.norm.cdf(samplesize_microns / 2, 0, footprint) - stats.norm.cdf(-samplesize_microns / 2, 0, footprint))
 
             Icor = self.reflectivity / beam_fraction
 
