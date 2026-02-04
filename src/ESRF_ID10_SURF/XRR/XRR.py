@@ -9,7 +9,7 @@ import copy
 import logging
 import os
 import time
-from math import sin, cos, pi
+from math import pi
 from typing import Optional, Tuple, Union, List, Dict, Any
 
 import h5py
@@ -493,13 +493,15 @@ class XRR:
 
         k0 = 2 * pi / (12.398 / self.energy)
 
-        # Using list comprehension inside array creation
-        self.Qz_map = np.array(
-            [[np.round(k0 * (sin(chi + ((self.PX0 - px) * self.pixel_size_qxz / SDD)) + sin(chi)), 10) for px in pixels]
-             for chi in chi_r])
-        self.Qx_map = np.array(
-            [[np.round(k0 * (cos(chi + ((self.PX0 - px) * self.pixel_size_qxz / SDD)) - cos(chi)), 10) for px in pixels]
-             for chi in chi_r])
+        # Vectorized calculation
+        chi_r_col = chi_r[:, np.newaxis]
+        pixels_row = pixels[np.newaxis, :]
+
+        term_px = (self.PX0 - pixels_row) * self.pixel_size_qxz / SDD
+        angle_term = chi_r_col + term_px
+
+        self.Qz_map = np.round(k0 * (np.sin(angle_term) + np.sin(chi_r_col)), 10)
+        self.Qx_map = np.round(k0 * (np.cos(angle_term) - np.cos(chi_r_col)), 10)
         logger.info("2D map calculated. Processing time %3.3f sec", time.time() - t0)
 
     def plot_Qmap(self, save: bool = False, fig: Optional[plt.Figure] = None, axes: Optional[plt.Axes] = None) -> Tuple[plt.Figure, plt.Axes]:
