@@ -722,7 +722,7 @@
 
 <div class="viewcode-block" id="XRR.save_reflectivity">
 <a class="viewcode-back" href="../../../XRR.html#ESRF_ID10_SURF.XRR.XRR.save_reflectivity">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_reflectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ESRF&#39;</span><span class="p">,</span> <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;opid10&#39;</span><span class="p">,</span> <span class="n">zgh_scans</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_reflectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ESRF&#39;</span><span class="p">,</span> <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;opid10&#39;</span><span class="p">,</span> <span class="n">affiliation</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;Harvard&#39;</span><span class="p">,</span> <span class="n">zgh_scans</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the reflectivity data to a text file.</span>
 
@@ -735,7 +735,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_sample_dir</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;orso&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_orso</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">creator</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_orso</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">creator</span><span class="p">,</span> <span class="n">affiliation</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reflectivity</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
@@ -751,9 +751,13 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reflectivity saved to: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_save_orso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_orso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">affiliation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the reflectivity data in ORSO format.</span>
+
+<span class="sd">        owner --- PI</span>
+<span class="sd">        creator --- person, who processed the data</span>
+<span class="sd">        affiliation --- shared between the two</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># 1. Define Columns</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
@@ -783,7 +787,7 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-        <span class="n">owner_person</span> <span class="o">=</span> <span class="n">orso</span><span class="o">.</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">affiliation</span><span class="o">=</span><span class="s1">&#39;ESRF&#39;</span><span class="p">)</span>
+        <span class="n">owner_person</span> <span class="o">=</span> <span class="n">orso</span><span class="o">.</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">affiliation</span><span class="o">=</span><span class="n">affiliation</span><span class="p">)</span>
 
         <span class="n">experiment</span> <span class="o">=</span> <span class="n">orso</span><span class="o">.</span><span class="n">Experiment</span><span class="p">(</span>
             <span class="n">title</span><span class="o">=</span><span class="s1">&#39;XRR&#39;</span><span class="p">,</span>
@@ -820,7 +824,7 @@
         <span class="c1"># 3. Reduction</span>
         <span class="n">reduction</span> <span class="o">=</span> <span class="n">orso</span><span class="o">.</span><span class="n">Reduction</span><span class="p">(</span>
             <span class="n">software</span><span class="o">=</span><span class="n">orso</span><span class="o">.</span><span class="n">Software</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ESRF_ID10_SURF&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.1&#39;</span><span class="p">),</span>
-            <span class="n">creator</span><span class="o">=</span><span class="n">orso</span><span class="o">.</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">creator</span><span class="p">,</span> <span class="n">affiliation</span><span class="o">=</span><span class="s1">&#39;ESRF&#39;</span><span class="p">),</span>
+            <span class="n">creator</span><span class="o">=</span><span class="n">orso</span><span class="o">.</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">creator</span><span class="p">,</span> <span class="n">affiliation</span><span class="o">=</span><span class="n">affiliation</span><span class="p">),</span>
             <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="p">)</span>
 

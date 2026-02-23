@@ -181,10 +181,10 @@ refl.plot_Qmap()
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 Starting q-space mapping.
-2D map calculated. Processing time 0.453 sec
-/home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:528: RuntimeWarning: divide by zero encountered in log10
+2D map calculated. Processing time 0.003 sec
+/home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:530: RuntimeWarning: divide by zero encountered in log10
   ax0.pcolormesh(self.Qx_map, self.Qz_map, np.log10(self.Smap2D), cmap=&#39;viridis&#39;, vmin=2, vmax=10,
-/home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:528: RuntimeWarning: invalid value encountered in log10
+/home/egor/PycharmProjects/ESRF_ID10_SURF/src/ESRF_ID10_SURF/XRR/XRR.py:530: RuntimeWarning: invalid value encountered in log10
   ax0.pcolormesh(self.Qx_map, self.Qz_map, np.log10(self.Smap2D), cmap=&#39;viridis&#39;, vmin=2, vmax=10,
 </pre></div></div>
 </div>
@@ -256,7 +256,7 @@ fig, ax = gid.plot_quick_analysis(save=True)
 Start loading data.
 Loading scan #25
 Loaded scan #25
-Loading completed. Reading time 0.003 sec
+Loading completed. Reading time 0.007 sec
 Start processing 2D data.
 Processing completed. Processing time 0.001 sec
 
@@ -379,7 +379,7 @@ plt.plot(new_qz, new_qz_cut, &#39;o&#39;, alpha=0.8)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&lt;matplotlib.lines.Line2D at 0x744e7bd47080&gt;]
+[&lt;matplotlib.lines.Line2D at 0x74fc9e57d490&gt;]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
