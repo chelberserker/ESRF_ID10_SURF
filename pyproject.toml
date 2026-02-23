@@ -34,6 +34,7 @@ Repository = "https://github.com/chelberserker/ESRF_ID10_SURF"
 
 [project.scripts]
 id10-surf-process = "ESRF_ID10_SURF.cli:main"
+id10-surf-calib-mythen2 = "ESRF_ID10_SURF.calib_mythen:main"
 
 
 [tool.setuptools]

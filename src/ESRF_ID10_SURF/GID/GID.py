@@ -804,7 +804,10 @@ class GID:
             ax.set_ylim(np.min(beam_pos[~beam_pos.mask]), np.max(beam_pos[~beam_pos.mask]))
 
             plt.text(34, 500, f"PPD = {-out.params['slope'].value:.2f}, \nmythen_gap = {int(out.params['step'].value)}")
-            plt.show()
+            if isinstance(plot, str):
+                plt.savefig(plot)
+            else:
+                plt.show()
 
         ppd = float(np.round(-out.params['slope'].value, 3))
         gap = int(out.params['step'].value)

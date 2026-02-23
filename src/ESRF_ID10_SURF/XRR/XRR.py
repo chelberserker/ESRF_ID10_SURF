@@ -650,7 +650,7 @@ class XRR:
 
         return fig, ax
 
-    def save_reflectivity(self, format: str = 'dat', owner: str = 'ESRF', creator: str = 'opid10', zgh_scans: Optional[List[int]] = None):
+    def save_reflectivity(self, format: str = 'dat', owner: str = 'ESRF', creator: str = 'opid10', affiliation: str='Harvard', zgh_scans: Optional[List[int]] = None):
         """
         Save the reflectivity data to a text file.
 
@@ -663,7 +663,7 @@ class XRR:
         self._ensure_sample_dir()
 
         if format == 'orso':
-            self._save_orso(owner, creator)
+            self._save_orso(owner, creator, affiliation)
             return
 
         out = self.get_reflectivity().T
@@ -678,9 +678,13 @@ class XRR:
         np.savetxt(filename, out)
         logger.info('Reflectivity saved to: %s', filename)
 
-    def _save_orso(self, owner: str, creator: str):
+    def _save_orso(self, owner: str, creator: str, affiliation: str):
         """
         Save the reflectivity data in ORSO format.
+
+        owner --- PI
+        creator --- person, who processed the data
+        affiliation --- shared between the two
         """
         # 1. Define Columns
         columns = [
@@ -710,7 +714,7 @@ class XRR:
         except Exception:
             start_date = datetime.now()
 
-        owner_person = orso.Person(name=owner, affiliation='ESRF')
+        owner_person = orso.Person(name=owner, affiliation=affiliation)
 
         experiment = orso.Experiment(
             title='XRR',
@@ -747,7 +751,7 @@ class XRR:
         # 3. Reduction
         reduction = orso.Reduction(
             software=orso.Software(name='ESRF_ID10_SURF', version='0.1'),
-            creator=orso.Person(name=creator, affiliation='ESRF'),
+            creator=orso.Person(name=creator, affiliation=affiliation),
             timestamp=datetime.now()
         )
 

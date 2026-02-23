@@ -33,6 +33,20 @@ def parse_scans(scan_str):
     return scans
 
 
+def make_saving_dir(saving, filename):
+    if saving == 'default':
+        if 'RAW_DATA' in filename:
+            file_dir, name_file = os.path.split(filename)
+            saving_dir = file_dir.replace('RAW_DATA', 'PROCESSED_DATA')
+        else:
+            logging.info(
+                'Filename does not contain RAW_DATA. Files will be saved into the current working directory.')
+            saving_dir = os.getcwd()
+    else:
+        saving_dir = saving
+    return saving_dir
+
+
 def main():
     parser = argparse.ArgumentParser(description="ESRF ID10 SURF Data Processing CLI")
     parser.add_argument("config", help="Path to the YAML configuration file")
@@ -54,8 +68,9 @@ def main():
     setup_gid = config.get('setup_gid', {})
     visit_conf = config.get('visit', {})
 
+    owner = visit_conf.get('owner', 'PhD student')
     user = visit_conf.get('user', 'ESRF')
-    owner = visit_conf.get('user_affiliation', 'Your_University')
+    user_affiliation = visit_conf.get('user_affiliation', 'Your_University')
     saving = visit_conf.get('saving', 'default')
 
     
@@ -72,18 +87,10 @@ def main():
                  print(f"Warning: File '{filename}' not found. Skipping.")
                  continue
 
-            if saving == 'default':
-                if 'RAW_DATA' in filename:
-                    file_dir, name_file = os.path.split(filename)
-                    saving_dir = file_dir.replace('RAW_DATA', 'PROCESSED_DATA')
-                else:
-                    logging.info(
-                        'Filename does not contain RAW_DATA. Files will be saved into the current working directory.')
-                    saving_dir = os.getcwd()
-            else:
-                saving_dir = saving
+            saving_dir = make_saving_dir(saving, filename)
 
             scans_list = item.get('scans', [])
+
             for scan_item in scans_list:
                 try:
                     # Parse parameters
@@ -135,7 +142,7 @@ def main():
                     # For now, always save .dat
                     processor.save_reflectivity(format='dat')
 
-                    processor.save_reflectivity(format='orso', owner=owner, creator=user)
+                    processor.save_reflectivity(format='orso', owner=owner, creator=user, affiliation=user_affiliation)
                     processor.plot_reflectivity(save=True)
                     
                 except Exception as e:
@@ -150,17 +157,7 @@ def main():
                 print(f"Warning: File '{filename}' not found or missing. Skipping.")
                 continue
 
-
-            if saving == 'default':
-                if 'RAW_DATA' in filename:
-                    file_dir, name_file = os.path.split(filename)
-                    saving_dir = file_dir.replace('RAW_DATA', 'PROCESSED_DATA')
-                else:
-                    logging.info(
-                        'Filename does not contain RAW_DATA. Files will be saved into the current working directory.')
-                    saving_dir = os.getcwd()
-            else:
-                saving_dir = saving
+            saving_dir = make_saving_dir(saving, filename)
 
             scans_list = item.get('scans', [])
 

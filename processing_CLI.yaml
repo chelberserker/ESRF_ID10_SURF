@@ -2,7 +2,8 @@ instrument: 'id10-surf'
 
 visit:
   local_contact: "John Doe"
-  user: 'Big Prof'
+  owner: 'Big Prof'
+  user: 'PhD student'
   user_affiliation: 'Harvard'
   visit id: 'sc7777'
   date: 2025-12-26
