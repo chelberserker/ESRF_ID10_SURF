@@ -329,6 +329,11 @@ class XRR:
         """
         t0 = time.time()
         #logger.info('Starting 2D data processing.')
+        if self.detector_name == 'eiger4m':
+            self.data = self.data.transpose(0,2,1)
+        else:
+            pass
+
         nic, nxc, nyc = np.shape(self.data)
 
         # Handle legacy data where energy might be an array
@@ -489,7 +494,8 @@ class XRR:
         t0 = time.time()
         logger.info('Starting q-space mapping.')
         chi_r = np.deg2rad(self.alpha_i)
-        pixels = np.array(range(516))
+        nic, nxc, nyc = np.shape(self.data)
+        pixels = np.array(range(nyc))
 
         k0 = 2 * pi / (12.398 / self.energy)
 
