@@ -10,18 +10,16 @@ from datetime import datetime
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
-from docutils.utils.math.latex2mathml import layout_styles
+
+from ..base import BaseSurf
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-class GIXS:
+class GIXS(BaseSurf):
     """
     Class for processing GIS(W)AXS data obtained with a large 2D detector, e.g. Eiger, Pilatus
-
-    Attributes:
-        file (str): Path to the HDF5 file containing the GIS(W)AXS data.
     """
     def __init__(self,
                  file,
@@ -39,26 +37,12 @@ class GIXS:
                  **kwargs):
         """
         Initialize the GIXS processor.
-        Args:
-            file (str): Path to the HDF5 file.
-            scan (int): List of scan numbers or a single scan number.
-            detector_name (str, optional): Name of detector dataset. Defaults to 'lambda'.
-            alpha_i_name (str, optional): Name of incident angle dataset. Defaults to 'chi'.
-            energy_name (str, optional): Name of the energy motor. Defaults to 'monoe'.
-            **kwargs: Arbitrary keyword arguments.
         """
-        self.file = file
-        self.scan = np.array(scan)
-        self.detector_name = detector_name
-        self.alpha_i_name = alpha_i_name
-        self.rot_axis_name = None
-        self.monitor_name = monitor_name
-        self.transmission_name = transmission_name
-        self.att_name = att_name
-        self.energy_name = energy_name
-        self.cnttime_name = cnttime_name
+        super().__init__(file, scan, alpha_i_name=alpha_i_name, detector_name=detector_name,
+                         monitor_name=monitor_name, transmission_name=transmission_name,
+                         att_name=att_name, cnttime_name=cnttime_name, energy_name=energy_name,
+                         I0=I0, saving_dir=saving_dir, **kwargs)
 
-        self.I0 = I0
         self.geometry = geometry
 
         self.gi_integrator = None
@@ -66,10 +50,21 @@ class GIXS:
         self.oop_range = None
         self.tilt_angle = None
 
+        # Add GIXS specific appendable keys
+        # Assuming GIXS scans might scan energy or angle, we append them.
+        self.appendable_keys.extend(['data', 'alpha_i', 'energy'])
 
-        self.data = np.empty((0, 0))
+        self.load_data()
 
-    def __load_single_scan__(self, scan_n:str):
+        # GIXS specific post-loading processing
+        try:
+            # Ensure alpha_i is an array of floats, possibly scalar wrapped in array if single value
+            if np.size(self.alpha_i) == 1:
+                self.alpha_i = np.array([float(self.alpha_i)])
+        except Exception:
+            logger.error('Error processing alpha_i')
+
+    def _load_single_scan(self, scan_n:str):
         with h5py.File(self.file, "r") as f:
             base_path = f"{scan_n}.1"
             meas_path = f"{base_path}/measurement/"
@@ -83,9 +78,8 @@ class GIXS:
                 else:
                     __incident_angle_path = meas_path
             except:
-                print(__incident_angle)
-
-
+                # print(__incident_angle) # Logic from original code, likely debugging
+                __incident_angle_path = posi_path
 
             data_dict = {
                 'data': np.array(f.get(f"{meas_path}{self.detector_name}")),
@@ -101,30 +95,6 @@ class GIXS:
 
         logger.info('Loaded scan #%s', scan_n)
         return data_dict
-
-    def __load_data__(self):
-        t0 = time.time()
-
-        # logger.info("Start loading data.")
-
-        first_scan_n = str(self.scan[0])
-        first_scan_data = self.__load_single_scan__(first_scan_n)
-
-        self.data = first_scan_data['data']
-        self.alpha_i = first_scan_data['alpha_i']
-        self.monitor = first_scan_data['monitor']
-        self.transmission = first_scan_data['transmission']
-        self.attenuator = first_scan_data['attenuator']
-        self.cnttime = first_scan_data['cnttime']
-        self.energy = first_scan_data['energy']
-        self.sample_name = first_scan_data['sample_name']
-
-        try:
-            self.alpha_i = np.array([float(self.alpha_i)])
-        except:
-            print('Error')
-
-        logger.info("Loading completed. Reading time %3.3f sec", time.time() - t0)
 
     def __init_grazing__(self):
         ai = self.geometry
